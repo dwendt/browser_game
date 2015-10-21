@@ -2,7 +2,9 @@
 
 this repo is the frontend. we should use another for the backend when that comes around.
 
-feature checklist:
+### to help understand the project's OO design, i recommend reading this https://gist.github.com/jonnyreeves/2474026
+
+## feature checklist:
 
 - [x] topdown game
 - [x] 2d game
