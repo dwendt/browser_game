@@ -2,7 +2,7 @@
  *  Player object. Should probably be inheriting a collidable/generic entity object. TODO.
  */
 
-define(['three'], function(THREE) {
+define(['three', 'keyboard'], function(THREE, THREEx) {
 
   // Private static.
   var numPlayers = 0;
@@ -11,6 +11,7 @@ define(['three'], function(THREE) {
   var warriorMap = THREE.ImageUtils.loadTexture( "js/assets/warrior.png" );
   warriorMap.magFilter = THREE.NearestFilter;
   var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  var keyboard = new THREEx.KeyboardState();
 
   // Constructor.
   function Player() {
@@ -48,6 +49,18 @@ define(['three'], function(THREE) {
     var ourSprite = scene.getObjectByName("playerSprite");
 
     // Add some vibration for good measure. Threejsing intensifies.
+    if(keyboard.pressed('up')) {
+      this.position.y += 5;
+    }
+    if(keyboard.pressed('left')) {
+      this.position.x -= 5;
+    }
+    if(keyboard.pressed('right')) {
+      this.position.x += 5;
+    }
+    if(keyboard.pressed('down')) {
+      this.position.y -= 5;
+    }
     ourSprite.position.set(this.position.x + Math.random()*10, this.position.y, this.parallax);
   };
 
