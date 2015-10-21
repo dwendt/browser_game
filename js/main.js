@@ -38,7 +38,6 @@ requirejs(['renderer', 'logic'], function(Renderer, GameLogic){
 
   // Logic needs a reference to the renderer to handle draws.
   var core_logic = new GameLogic(core_renderer);
-  var keyboard = 
   core_renderer.animate();
 });
 
