@@ -50,17 +50,22 @@ define(['three', 'keyboard'], function(THREE, THREEx) {
 
     // Add some vibration for good measure. Threejsing intensifies.
     if(keyboard.pressed('up')) {
+      this.direction = 'up';
       this.position.y += 5;
     }
     if(keyboard.pressed('left')) {
+      this.direction = 'left';
       this.position.x -= 5;
     }
     if(keyboard.pressed('right')) {
+      this.direction = 'right';
       this.position.x += 5;
     }
     if(keyboard.pressed('down')) {
+      this.direction = 'down';
       this.position.y -= 5;
     }
+
     ourSprite.position.set(this.position.x + Math.random()*10, this.position.y, this.parallax);
   };
 

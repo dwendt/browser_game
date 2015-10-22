@@ -41,6 +41,7 @@ define(["three", "level", "player"], function(THREE, Level, Player) {
     rendUpdate: function(scene) {
       if (this.player) {
         this.player.rendUpdate(scene);
+        this.renderer.setCameraPos(this.player.position.x, this.player.position.y, 7000);
       }
 
       if (this.level) {

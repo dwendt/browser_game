@@ -7,9 +7,7 @@ require.config({
     three: 'vendor/three.min',
     canvasrenderer: 'vendor/examples/renderers/CanvasRenderer',
     projector: 'vendor/examples/renderers/Projector',
-    keyboard: 'vendor/threex.keyboardstate',
-    cannon: 'vendor/cannon',
-    debugrenderer: 'vendor/cannonDebugRenderer'
+    keyboard: 'vendor/threex.keyboardstate'
   },
   shim: {
     three: {
@@ -19,9 +17,6 @@ require.config({
       deps: ['three']
     },
     projector: {
-      deps: ['three']
-    },
-    debugrenderer: {
       deps: ['three']
     },
     keyboard: {
