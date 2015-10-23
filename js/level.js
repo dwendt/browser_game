@@ -14,6 +14,8 @@ define(['three'], function(THREE) {
   var backGeo = new THREE.PlaneGeometry(10000, 10000, 1); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
   
+
+
   // Constructor.
   function Level() {
     this.rendInitted = false;

@@ -1,21 +1,22 @@
 /*
- *  Player object. Should probably be inheriting a collidable/generic entity object. TODO.
+ *  Skeleton object. Should probably be inheriting a collidable/generic entity object. TODO.
  */
 
 define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, TextureAnimator) {
 
   // Private static.
-  var numPlayers = 0;
+  var numSkeletons = 0;
   // We should probably define typical player THREEJS geometry/colors/etc as private statics here, and jjust copy the right ones in rendinit based on the kind of player.
 
-  var warriorMap = THREE.ImageUtils.loadTexture( "js/assets/warrior.png" );
-  warriorMap.magFilter = THREE.NearestFilter;
-  var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  var skeletonMap = THREE.ImageUtils.loadTexture( "js/assets/skeleton/right.png" );
+  
+  skeletonMap.magFilter = THREE.NearestFilter;
+  var skeletonSpriteMat = new THREE.SpriteMaterial( { map: skeletonMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
 
   // Constructor.
-  function Player() {
-    numPlayers++;
+  function Skeleton() {
+    numSkeletons++;
     
     this.parallax = 10; // How much should this thing parallax? Must be >= 1. Affects scale.
     this.position = new THREE.Vector3(0,0,0); // 
@@ -27,30 +28,36 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   };
 
   // Instanced destructor...
-  Player.prototype.onRemove = function() {
-    numPlayers--;
+  Skeleton.prototype.onRemove = function() {
+    numSkeletons--;
   };
 
   // For when it's first being added to a scene.
-  Player.prototype.rendInit = function(scene) {
+  Skeleton.prototype.rendInit = function(scene) {
     // http://threejs.org/docs/#Reference/Objects/Sprite
-    var sprite = new THREE.Sprite( warriorSpriteMat );
+    var sprite = new THREE.Sprite( skeletonSpriteMat );
     console.log(scene);
     sprite.position.set(0,0,this.parallax);
     sprite.scale.set(150,150,1);
     sprite.name = "playerSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
-
+    this.direction.x = 1;
+    this.direction.y = -1;
+    this.clock = new THREE.Clock();
+    this.animator = new TextureAnimator(skeletonMap, 9, 1, 9, 75);
+    
     scene.add(sprite);
   };
 
   // Updates geometry related to this.
-  Player.prototype.rendUpdate = function(scene) {
+  Skeleton.prototype.rendUpdate = function(scene) {
     if (!this.rendInitted) {
       this.rendInit(scene);
       this.rendInitted = true;
     }
 
+    var delta = this.clock.getDelta();
+    this.animator.update(delta * 1000);
 
     this.collision(scene);
     this.move();
@@ -65,31 +72,26 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     // ourSprite.position.set(this.position.x + Math.random()*100 - 150, this.position.y + Math.random() * 25, this.parallax + Math.random() * 5);    
 
     // Random X scale flip. Could be used for "unaware" enemies?
-    // if(Math.random() > .95) this.sprite.scale.x = this.sprite.scale.x * ( ( Math.random() > .5) ? 1 : -1 );
+    // this.sprite.scale.x *= (Math.random() > .9) ? -1 : 1 ;
   };
 
-  Player.prototype.move = function() {
-    if(keyboard.pressed('up')) {
-      this.direction.y = 1;
-      this.position.y += 5;
+  Skeleton.prototype.move = function() {
+
+    if(Math.random() > .95) {
+      this.direction.x *= -1;
+      //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
+      this.sprite.scale.x *= -1;
     }
-    if(keyboard.pressed('left')) {
-      this.direction.x = -1;
-      this.position.x -= 5;
-      this.sprite.scale.x = -150;
+
+    if(Math.random() > .95) {
+      this.direction.y *= -1;
     }
-    if(keyboard.pressed('right')) {
-      this.direction.x = 1;
-      this.position.x += 5;
-      this.sprite.scale.x = 150;
-    }
-    if(keyboard.pressed('down')) {
-      this.direction.y = -1;
-      this.position.y -= 5;
-    }
+
+   this.position.x += this.direction.x * 2;
+   this.position.y += this.direction.y * 2;
   }
 
-  Player.prototype.collision = function(scene) {
+  Skeleton.prototype.collision = function(scene) {
     var collisions, i,
     // Maximum distance from the origin before we consider collision
     distance = this.sprite.size,
@@ -119,9 +121,9 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   }
 
   // For when this is removed from a scene.
-  Player.prototype.rendKill = function(scene) {
+  Skeleton.prototype.rendKill = function(scene) {
     if (!this.rendInitted) { return; } // never initted, nothing to kill
   };
 
-  return Player;
+  return Skeleton;
 });

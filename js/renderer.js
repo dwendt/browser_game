@@ -79,6 +79,7 @@ define(['three'],function(THREE) {
     document.body.appendChild(canvRenderer.domElement);
 
     window.addEventListener( 'resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
       camera.left = window.innerWidth / -2;
       camera.right = window.innerWidth / 2;
       camera.top = window.innerHeight / 2;
