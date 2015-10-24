@@ -8,8 +8,7 @@ require.config({
     canvasrenderer: 'vendor/examples/renderers/CanvasRenderer',
     projector: 'vendor/examples/renderers/Projector',
     keyboard: 'vendor/threex.keyboardstate',
-    cannon: 'vendor/cannon',
-    debugrenderer: 'vendor/cannonDebugRenderer'
+    textureAnimator: 'vendor/ThreeTextureAnimator'
   },
   shim: {
     three: {
@@ -21,11 +20,12 @@ require.config({
     projector: {
       deps: ['three']
     },
-    debugrenderer: {
-      deps: ['three']
-    },
     keyboard: {
       exports: 'THREEx'
+    },
+    textureAnimator: {
+      deps: ['three'],
+      exports: 'TextureAnimator'
     }
   }
 });

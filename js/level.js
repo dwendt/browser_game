@@ -8,10 +8,10 @@ define(['three'], function(THREE) {
   // Grass texture for the default backing. TODO: loading screen instead?
   var grassMap = THREE.ImageUtils.loadTexture( "js/assets/grass.png" );
   grassMap.wrapS = grassMap.wrapT = THREE.RepeatWrapping;
-  grassMap.repeat.set( 10, 10 ); // Larger values mean tinier texture.
+  grassMap.repeat.set( 40, 40 ); // Larger values mean tinier texture.
 
   // Properties for the backing.
-  var backGeo = new THREE.PlaneGeometry(3000, 3000, 1); // TODO: planegeometry or sprite better?
+  var backGeo = new THREE.PlaneGeometry(10000, 10000, 1); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
   
 

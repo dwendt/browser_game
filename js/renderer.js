@@ -79,6 +79,7 @@ define(['three'],function(THREE) {
     document.body.appendChild(canvRenderer.domElement);
 
     window.addEventListener( 'resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
       camera.left = window.innerWidth / -2;
       camera.right = window.innerWidth / 2;
       camera.top = window.innerHeight / 2;
@@ -118,9 +119,9 @@ define(['three'],function(THREE) {
         var timer = Date.now() * 0.0001;
 
         //camera.position.x = Math.cos( timer ) * 200;
-    camera.position.x = Math.sin(timer) * 200;
-    camera.position.z = 7000;//Math.sin( (timer%(Math.PI)) ) * -2000;
-    camera.position.y = 0;
+    // camera.position.x = Math.sin(timer) * 200;
+    // camera.position.z = 7000;//Math.sin( (timer%(Math.PI)) ) * -2000;
+    // camera.position.y = 0;
 /*
     camera.rotation.x = Math.PI / 2;
     camera.rotation.y = 0;

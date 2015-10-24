@@ -2,20 +2,20 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player"], function(THREE, Level, Player) {
+define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, Skeleton) {
 
   // Constructor for this.
   function GameLogic(renderer) {
     this.renderer = renderer;       // Given to us by the main controller.
     console.log("setting callback...");
     renderer.setCallback(this);
-
     this.player = new Player();         // Create a new player object.
 
     // Variables used for game state
     this.inMenu = true;
     this.curLevel = 0;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
+    this.actors.push(new Skeleton());
 
     // TODO: since we have no menu, just init a new level.
     this.level = null;
@@ -41,6 +41,7 @@ define(["three", "level", "player"], function(THREE, Level, Player) {
     rendUpdate: function(scene) {
       if (this.player) {
         this.player.rendUpdate(scene);
+        this.renderer.setCameraPos(this.player.position.x, this.player.position.y, 7000);
       }
 
       if (this.level) {
@@ -48,16 +49,16 @@ define(["three", "level", "player"], function(THREE, Level, Player) {
       }
 
       // Update entity renderstuff.
-      for (var e in this.actors) {
-        if(e) {
-          e.rendUpdate(scene);
+      for (var i = 0; i < this.actors.length; i++) {
+        if(this.actors[i]) {
+          this.actors[i].rendUpdate(scene);
         }
       }
     }
   };
 
   // Static functions
-//GameLogic.someFunc = function() {....};
+  //GameLogic.someFunc = function() {....};
 
   return GameLogic;
 });
