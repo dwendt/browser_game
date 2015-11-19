@@ -50,11 +50,12 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   Player.prototype.rendInit = function(scene) {
     // http://threejs.org/docs/#Reference/Objects/Sprite
     var sprite = new THREE.Sprite( warriorSpriteMat );
-    console.log(scene);
+
     sprite.position.set(0,0,this.parallax);
     sprite.scale.set(150,150,1);
     sprite.name = "playerSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
+    console.log("init player sprite");
 
     scene.add(sprite);
   };

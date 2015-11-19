@@ -25,7 +25,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   // Updates geometry related to this.
   Enemy.prototype.rendUpdate = function(scene) {
     // Call the parent's.
-    Actor.prototype.rendUpdate.call(this);
+    Actor.prototype.rendUpdate.call(this, scene);
 
     // If we have any player-on-render stuff to do it'd go below.
   };
