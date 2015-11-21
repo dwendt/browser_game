@@ -17,31 +17,34 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   // Constructor. Inherits Actor.
   function Player() {
     Actor.call(this); // Call the parent constructor
-
+    this.name="player";
     numPlayers++;
   };
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
 
   Player.prototype.move = function() {
-    if(keyboard.pressed('up')) {
+    console.log(this.canMove);
+    if(keyboard.pressed('up') && this.canMove.up) {
       this.direction.y = 1;
       this.position.y += 5;
     }
-    if(keyboard.pressed('left')) {
+    if(keyboard.pressed('left') && this.canMove.leftDir) {
       this.direction.x = -1;
       this.position.x -= 5;
       this.sprite.scale.x = -150;
     }
-    if(keyboard.pressed('right')) {
+    if(keyboard.pressed('right') && this.canMove.rightDir) {
       this.direction.x = 1;
       this.position.x += 5;
       this.sprite.scale.x = 150;
     }
-    if(keyboard.pressed('down')) {
+    if(keyboard.pressed('down') && this.canMove.down) {
       this.direction.y = -1;
       this.position.y -= 5;
     }
+
+    console.log(this.canMove.leftDir);
   }
 
   // --------- Below functions are overrides or extensions of parent methods.
@@ -66,7 +69,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     Actor.prototype.rendUpdate.call(this, scene);
 
     // If we have any player-on-render stuff to do it'd go below.
-    this.move(); // keyboard state based movement
+    // this.move(); // keyboard state based movement
   };
 
   // For when this is removed from a scene.
