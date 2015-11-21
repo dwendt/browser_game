@@ -51,7 +51,14 @@ define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, 
       // Update entity renderstuff.
       for (var i = 0; i < this.actors.length; i++) {
         if(this.actors[i]) {
+
           this.actors[i].rendUpdate(scene);
+        }
+
+        // remove from scene if necessary
+        if(this.actors[i].removal) {
+          this.actors[i] = null;
+          this.actors.splice(i--,1);
         }
       }
     }

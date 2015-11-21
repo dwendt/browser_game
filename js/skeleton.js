@@ -23,18 +23,22 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
 
   Skeleton.prototype.move = function() {
 
-    // if(Math.random() > .95) {
-    //   this.direction.x *= -1;
-    //   //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
-    //   this.sprite.scale.x *= -1;
-    // }
+    // Simulate taking damage to test scene removal on death
+    // this.health -= 1;
 
-    // if(Math.random() > .95) {
-    //   this.direction.y *= -1;
-    // }
+    if(Math.random() > .95) {
+      this.direction.x *= -1;
+      //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
+      this.sprite.scale.x *= -1;
+    }
 
-    // this.position.x += this.direction.x * 2;
-    // this.position.y += this.direction.y * 2;
+    if(Math.random() > .95) {
+      this.direction.y *= -1;
+    }
+
+    if(this.canMove.left && this.canMove.right)  this.position.setX(this.position.x + this.direction.x * 2);
+    if(this.canMove.up && this.canMove.down)  this.position.setY(this.position.y + this.direction.y * 2);
+
   };
 
   // --------- Below functions are overrides or extensions of parent methods.
@@ -51,19 +55,23 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     var sprite = new THREE.Sprite( skeletonSpriteMat );
     console.log("initting skele");
 
-    sprite.position.set(0,0,this.parallax);
     sprite.scale.set(150,150,1);
     sprite.name = "skeletonSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
-    this.position.set(30,30,0);
+    this.position.set(30,220,0);
+    //this.sprite.position = (this.position);
     this.direction.x = 1;
     this.direction.y = -1;
     this.position.z = 10;
     this.clock = new THREE.Clock();
     this.animator = new TextureAnimator(skeletonMap, 9, 1, 9, 75);
     this.animRate = 1000;
+
+    this.health = 100;
     
     scene.add(sprite);
+
+    console.log(this.sprite);
   };
 
   // Updates geometry related to this.

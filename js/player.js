@@ -24,7 +24,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
 
   Player.prototype.move = function() {
-    console.log(this.canMove);
+    // console.log(this.canMove);
     if(keyboard.pressed('up') && this.canMove.up) {
       this.direction.y = 1;
       this.position.y += 5;
@@ -44,7 +44,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
       this.position.y -= 5;
     }
 
-    console.log(this.canMove.leftDir);
+    //console.log(this.canMove.leftDir);
   }
 
   // --------- Below functions are overrides or extensions of parent methods.

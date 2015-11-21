@@ -15,6 +15,9 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     this.parallax = 10; // How much should this thing parallax? Must be >= 1. Affects scale.
     this.position = new THREE.Vector3(0,0,0); // 
     this.rendInitted = false; // Have we rendered it once yet?
+    this.health = 100;
+    this.damage = 10;
+    this.removal = false;
     
     // Raycaster and  Ray in each direction for collision detection
     this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(1, -1, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, -1, 0),new THREE.Vector3(-1, 0, 0),new THREE.Vector3(-1, 1, 0)];
@@ -26,6 +29,8 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   // Instanced destructor...
   Actor.prototype.onRemove = function() {
     numActors--;
+    this.removal = true;
+    this.scene.remove(this.sprite);
   };
 
   // For when it's first being added to a scene.
@@ -55,11 +60,17 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       var delta = this.clock.getDelta();
       this.animator.update(delta*this.animRate);
     }
+
+    if(this.health <= 0) {
+      this.onRemove();
+    }
+    this.scene = scene;
     this.collision(scene);
     this.move();
 
     // Update the position
     this.sprite.position.set(this.position.x, this.position.y, this.parallax);
+    //console.log(this.name,this.sprite.position.x,this.sprite.position.y);
 
     // Add some vibration for good measure. Threejsing intensifies.
     //ourSprite.position.set(this.position.x + Math.random()*10, this.position.y, this.parallax);
@@ -87,18 +98,18 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       collisions = this.caster.intersectObjects(obstacles);
       // And disable that direction if we do
       if (collisions.length > 0 && collisions[0].distance <= distance) {
-        // console.log(this.name,this.caster.ray.origin);
+        //console.log(this.name,this.caster.ray.origin);
         // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
         if ((i === 0 || i === 1 || i === 7) && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.up = false;
-          this.position.y -= 5;
+          this.position.y -= 1;
           // console.log("i == " + i);
           // console.log(this.name + " collided with " + collisions[0].object.name);
           // console.log(collisions[0].distance);
           // do something on collision.
         } else if ((i === 3 || i === 4 || i === 5)  && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.down = false;
-          this.position.y += 5;
+          this.position.y += 1;
           // console.log("i == " + i);
           // console.log(this.name + " collided with " + collisions[0].object.name);
           // console.log(collisions[0].distance);
@@ -107,15 +118,17 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
         }
         if ((i === 1 || i === 2 || i === 3)  && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.rightDir = false;
-          this.position.x -= 5;
+          this.position.x -= 1;
           // console.log("i == " + i);
           // console.log(this.name + " collided with " +  collisions[0].object.name);
           // console.log(collisions[0].distance);
 
           // do something on collision.
         } else if ((i === 5 || i === 6 || i === 7)  && (this.name+"Sprite" !== collisions[0].object.name)) {
+          // console.log(this);
+          // console.log(collisions[0]);
           this.newCanMoveVals.leftDir = false;
-          this.position.x += 5;
+          this.position.x += 1;
           // console.log("i == " + i);
           // console.log(this.name + " collided with " + collisions[0].object.name);
           // console.log(collisions[0].distance);

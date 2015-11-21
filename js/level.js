@@ -37,8 +37,6 @@ define(['three'], function(THREE) {
     var wall = new THREE.Mesh(new THREE.BoxGeometry(100,100,200), new THREE.MeshBasicMaterial( {color: 0x00ff00}));
     wall.position.set(600,0,0);
     scene.add(wall);
-    console.log('WHERE TEH FUCK AM I');
-    console.log(wall);  
     /*
     // random colored lights?
     var ambientLight = new THREE.AmbientLight( 0.5 * 0x10 );
