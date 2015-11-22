@@ -17,6 +17,7 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     Enemy.call(this); // Call the parent constructor
     this.name="skeleton";
     numSkeletons++;
+    this.attackDelay = 1000;
   };
 
   Skeleton.prototype = Object.create(Enemy.prototype); // is-a Enemy inheritance.
@@ -26,18 +27,18 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     // Simulate taking damage to test scene removal on death
     // this.health -= 1;
 
-    if(Math.random() > .95) {
-      this.direction.x *= -1;
-      //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
-      this.sprite.scale.x *= -1;
-    }
+    // if(Math.random() > .95) {
+    //   this.direction.x *= -1;
+    //   //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
+    //   this.sprite.scale.x *= -1;
+    // }
 
-    if(Math.random() > .95) {
-      this.direction.y *= -1;
-    }
+    // if(Math.random() > .95) {
+    //   this.direction.y *= -1;
+    // }
 
-    if(this.canMove.left && this.canMove.right)  this.position.setX(this.position.x + this.direction.x * 2);
-    if(this.canMove.up && this.canMove.down)  this.position.setY(this.position.y + this.direction.y * 2);
+    // if(this.canMove.left && this.canMove.right)  this.position.setX(this.position.x + this.direction.x * 2);
+    // if(this.canMove.up && this.canMove.down)  this.position.setY(this.position.y + this.direction.y * 2);
 
   };
 
@@ -58,6 +59,7 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     sprite.scale.set(150,150,1);
     sprite.name = "skeletonSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
+    this.sprite.obj = this;
     this.position.set(30,220,0);
     //this.sprite.position = (this.position);
     this.direction.x = 1;

@@ -19,6 +19,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     Actor.call(this); // Call the parent constructor
     this.name="player";
     numPlayers++;
+    this.attackDelay = 20;
   };
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
@@ -43,6 +44,12 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
       this.direction.y = -1;
       this.position.y -= 5;
     }
+    if(keyboard.pressed('space') && this.attackCooldown == 0) {
+      this.attack(this.scene);
+    }
+
+    // Update timing variables
+    this.attackCooldown -= (this.attackCooldown > 0 ? 1 : 0);
 
     //console.log(this.canMove.leftDir);
   }
@@ -59,6 +66,8 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     sprite.name = "playerSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
     console.log("init player sprite");
+    this.scene = scene;
+    this.sprite.obj = this;
 
     scene.add(sprite);
   };

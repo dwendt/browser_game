@@ -24,6 +24,8 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     this.caster = new THREE.Raycaster(this.position, this.rays[0]);
     this.direction = {};
     this.canMove = {'up':true, 'rightDir': true, 'down': true, 'leftDir': true};
+    this.attackCooldown = 0;
+    // Classes must override this.attackDelay with ms delay >= 100
   };
 
   // Instanced destructor...
@@ -97,7 +99,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       // Test if we intersect with any obstacle mesh
       collisions = this.caster.intersectObjects(obstacles);
       // And disable that direction if we do
-      if (collisions.length > 0 && collisions[0].distance <= distance) {
+      if (collisions.length > 0 && collisions[0].distance <= distance && collisions[0].object.name === 'wall') {
         //console.log(this.name,this.caster.ray.origin);
         // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
         if ((i === 0 || i === 1 || i === 7) && (this.name+"Sprite" !== collisions[0].object.name)) {
@@ -139,6 +141,58 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       //console.log(this.name, this.newCanMoveVals.leftDir);
       this.canMove = this.newCanMoveVals;
       //console.log(this.canMove);
+    }
+  }
+
+  Actor.prototype.attack = function(scene) {
+    console.log(this.name,'attacking');
+    this.attackCooldown += this.attackDelay;
+    // this.canMove = {'up':true, 'right': true, 'down': true, 'left': true};
+    var collisions, i, distance, obstacles;
+    // Maximum distance from the origin before we consider collision
+    distance = this.radius * 1.5;
+    // Get the obstacles array from our world
+    obstacles = scene.children;
+    // For each ray
+    var objHit = false;
+    for (i = 0; i < this.rays.length; i += 1) {
+      if(objHit) break;
+      // We reset the raycaster to this direction
+      this.caster.set(this.position, this.rays[i]);
+      // Test if we intersect with any obstacle mesh
+      collisions = this.caster.intersectObjects(obstacles);
+      // And disable that direction if we do
+
+      for (var j = 0; j < collisions.length; j++) {
+        if (collisions.length > 0 && collisions[j].distance <= distance && collisions[j].object.name !== 'wall' && (this.name+"Sprite" !== collisions[j].object.name)) {
+          if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+            // do something on collision.
+            collisions[j].object.obj.health -= this.damage;
+            collisions[j].object.obj.position.x += 20;
+            objHit=true;
+            break;
+          } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+            // do something on collision.
+            collisions[j].object.obj.health -= this.damage;
+            collisions[j].object.obj.position.x -= 20;
+            objHit=true;
+            break;
+          }
+          if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+            // do something on collision.
+            collisions[j].object.obj.health -= this.damage;
+            collisions[j].object.obj.position.y -= 20;
+            objHit=true;
+            break;
+          } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+            // do something on collision.
+            collisions[j].object.obj.health -= this.damage;
+            collisions[j].object.obj.position.y += 20;
+            objHit=true;
+            break;
+          }
+        }
+      }
     }
   }
 

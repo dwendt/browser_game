@@ -36,6 +36,7 @@ define(['three'], function(THREE) {
     newBack.name = "backing"; // TODO: unique name GUIDs !!IMPORTANT!! !!HOW DO WE DO THIS!!
     var wall = new THREE.Mesh(new THREE.BoxGeometry(100,100,200), new THREE.MeshBasicMaterial( {color: 0x00ff00}));
     wall.position.set(600,0,0);
+    wall.name = 'wall';
     scene.add(wall);
     /*
     // random colored lights?
