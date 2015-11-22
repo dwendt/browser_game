@@ -17,31 +17,41 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   // Constructor. Inherits Actor.
   function Player() {
     Actor.call(this); // Call the parent constructor
-
+    this.name="player";
     numPlayers++;
+    this.attackDelay = 20;
   };
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
 
   Player.prototype.move = function() {
-    if(keyboard.pressed('up')) {
+    // console.log(this.canMove);
+    if(keyboard.pressed('up') && this.canMove.up) {
       this.direction.y = 1;
       this.position.y += 5;
     }
-    if(keyboard.pressed('left')) {
+    if(keyboard.pressed('left') && this.canMove.leftDir) {
       this.direction.x = -1;
       this.position.x -= 5;
       this.sprite.scale.x = -150;
     }
-    if(keyboard.pressed('right')) {
+    if(keyboard.pressed('right') && this.canMove.rightDir) {
       this.direction.x = 1;
       this.position.x += 5;
       this.sprite.scale.x = 150;
     }
-    if(keyboard.pressed('down')) {
+    if(keyboard.pressed('down') && this.canMove.down) {
       this.direction.y = -1;
       this.position.y -= 5;
     }
+    if(keyboard.pressed('space') && this.attackCooldown == 0) {
+      this.attack(this.scene);
+    }
+
+    // Update timing variables
+    this.attackCooldown -= (this.attackCooldown > 0 ? 1 : 0);
+
+    //console.log(this.canMove.leftDir);
   }
 
   // --------- Below functions are overrides or extensions of parent methods.
@@ -56,6 +66,8 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     sprite.name = "playerSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
     console.log("init player sprite");
+    this.scene = scene;
+    this.sprite.obj = this;
 
     scene.add(sprite);
   };
@@ -66,7 +78,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     Actor.prototype.rendUpdate.call(this, scene);
 
     // If we have any player-on-render stuff to do it'd go below.
-    this.move(); // keyboard state based movement
+    // this.move(); // keyboard state based movement
   };
 
   // For when this is removed from a scene.
