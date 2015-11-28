@@ -66,8 +66,7 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     // http://threejs.org/docs/#Reference/Objects/Sprite
     var sprite = new THREE.Sprite( skeletonSpriteMat );
     console.log("initting skele");
-
-    sprite.scale.set(150,150,1);
+    sprite.scale.set(this.scale,this.scale,1);
     sprite.name = "skeletonSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
     this.sprite.obj = this;
@@ -89,7 +88,7 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     this.health = 100;
     
     scene.add(sprite);
-
+    // this.showRaycastLines();
   };
 
   // Updates geometry related to this.
