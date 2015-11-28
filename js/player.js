@@ -9,9 +9,11 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
 
   // We should probably define typical player THREEJS geometry/colors/etc as private statics here, and jjust copy the right ones in rendinit based on the kind of player.
 
-  var warriorMap = THREE.ImageUtils.loadTexture( "js/assets/player/warrior.png" );
-  warriorMap.magFilter = THREE.NearestFilter;
-  var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  var warriorRightMap = THREE.ImageUtils.loadTexture( "js/assets/player/warriorRight.png" );
+  var warriorLeftMap = THREE.ImageUtils.loadTexture( "js/assets/player/warriorLeft.png" );
+  warriorRightMap.magFilter = THREE.NearestFilter;
+  warriorLeftMap.magFilter = THREE.NearestFilter;
+  var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
 
   // Constructor. Inherits Actor.
@@ -32,14 +34,19 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
       this.position.y += 5;
     }
     if(keyboard.pressed('left') && this.canMove.leftDir) {
+      // if(this.direction.x == 1) {
+        this.sprite.material.map = warriorLeftMap;
+      // }
       this.direction.x = -1;
       this.position.x -= 5;
-      this.sprite.scale.x = -150;
     }
     if(keyboard.pressed('right') && this.canMove.rightDir) {
+      // if(this.direction.x == -1) {
+        this.sprite.material.map = warriorRightMap;
+      // }
       this.direction.x = 1;
       this.position.x += 5;
-      this.sprite.scale.x = 150;
+      
     }
     if(keyboard.pressed('down') && this.canMove.down) {
       this.direction.y = -1;
@@ -63,12 +70,14 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     var sprite = new THREE.Sprite( warriorSpriteMat );
 
     sprite.position.set(0,0,this.parallax);
-    sprite.scale.set(150,150,1);
+    sprite.scale.set(this.scale,this.scale,1);
     sprite.name = "playerSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
     console.log("init player sprite");
     this.scene = scene;
     this.sprite.obj = this;
+
+    this.scale.x *= -1;
 
     this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
     this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
@@ -77,24 +86,13 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
     this.sphere = new THREE.Mesh( geometry, material );
-    //scene.add( this.sphere );
+    scene.add( this.sphere );
 
     scene.add(sprite);
-    //this.showRaycastLines();
+    // this.showRaycastLines();
   };
 
-  Player.prototype.showRaycastLines = function() {
-    var mat = new THREE.LineBasicMaterial({color: 0x0000ff});
-    for(var i = 0; i < this.rays.length; i++) {
-      var geometry = new THREE.Geometry();
-      geometry.vertices.push(
-        new THREE.Vector3( 0, 0, 0 ),
-        this.rays[i]
-      );
-      //geometry.vertices[1].multiplyScalar(this.radius);
-      this.sprite.add(new THREE.Line(geometry,mat));
-    }
-  }
+  
 
   // Updates geometry related to this.
   Player.prototype.rendUpdate = function(scene) {
