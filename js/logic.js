@@ -2,10 +2,11 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, Skeleton) {
+define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level, Player, Skeleton, $) {
 
   // Constructor for this.
   function GameLogic(renderer) {
+    // JQuery is present in this function for UI updates
     this.renderer = renderer;       // Given to us by the main controller.
     console.log("setting callback...");
     renderer.setCallback(this);
@@ -20,6 +21,7 @@ define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, 
     this.actors.push(new Skeleton());
     this.actors.push(new Skeleton());
     this.actors.push(new Skeleton());
+    this.score = 0;
 
     // TODO: since we have no menu, just init a new level.
     this.level = null;
@@ -37,9 +39,13 @@ define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, 
     },
     // Handle things we need to do when we transition off our current level.
     storeLevel: function() {
+      this.levelHist.push(this.level.walls);
     },
     tick: function() {
 
+    },
+    nextLevel: function() {
+      this.storeLevel();
     },
     // Called when a new frame is rendered, should make renderables update geometry/color/etc.
     rendUpdate: function(scene) {
@@ -58,15 +64,33 @@ define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, 
         if(this.actors[i]) {
 
           this.actors[i].rendUpdate(scene);
+          // if(this.actors[i].name == 'player'){
+            console.log($('#playerHealth'));
+            $('#playerHealth').text(this.actors[i].health + " / " + 100);
+          // }
         }
 
         // remove from scene if necessary
         if(this.actors[i].removal) {
-          this.actors[i] = null;
-          this.actors.splice(i--,1);
+          if(this.actors[i].name === 'player') {
+            //Gameover
+          }
+          else {
+            this.actors[i] = null;
+            this.actors.splice(i--,1);
+            this.score += 10;
+            $('#playerScore').text("Score: " + this.score);
+          }
         }
+
+      }
+
+      if(this.actors.length == 1) { // Only the player is left
+        this.nextLevel();
       }
     }
+
+    
   };
 
   // Static functions
