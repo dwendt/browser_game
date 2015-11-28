@@ -21,7 +21,8 @@ define(['three'], function(THREE) {
     this.rendInitted = false;
     this.cells = [];
     this.walls = [];
-    this.numCells = 30;
+    this.walls2 = new Array();
+    this.numCells = 10;
   };
 
   // Instanced destructor...
@@ -77,130 +78,206 @@ define(['three'], function(THREE) {
       this.cells[i] = [];
       visited[i] = [];
       for(var j = 0; j < this.numCells; j++) {
-        this.cells[i][j] = {up:false, left:false};
+        this.cells[i][j] = {up:true, left:true, down:true, right:true};
         visited[i][j] = false;
       }
     }
 
-    var startX = this.cells.length - 2;
-    var startY = this.cells.length - 2;
+    this.carve(0,0,visited,scene);
 
-    var cell = {x: startX, y: startY};
-    //visited[startX][startY] = true;
-    var cellStack = new Array();
-    cellStack.push(cell);
+    // var startX = this.cells.length - 2;
+    // var startY = this.cells.length - 2;
 
-    while(cellStack.length > 0) {
-      cell = cellStack.pop();
-      if(visited[cell.x][cell.y]) continue;
-      visited[cell.x][cell.y] = true;
-      var randInts = window.crypto.getRandomValues(new Uint8Array(2));
-      if(cell.x > 1 ) {
-        if(!visited[cell.x-1][cell.y]){
-          cellStack.push({x: cell.x - 1, y: cell.y});
-        }
-        var upperHole = (randInts[0] <= 50) ? true : false;
-        this.cells[cell.x][cell.y].up = upperHole;
-      }
-      if(cell.y > 1 ) {
-        if(!visited[cell.x][cell.y-1]){
-          cellStack.push({x: cell.x, y: cell.y - 1});
-        }
-        if(upperHole) {
-          this.cells[cell.x][cell.y].left = (randInts[1] <= 50) ? true : false;
-        }
-      }
-    }
-    console.log(this.cells);
+    // var cell = {x: startX, y: startY};
+    // //visited[startX][startY] = true;
+    // var cellStack = new Array();
+    // cellStack.push(cell);
+
+    // while(cellStack.length > 0) {
+    //   cell = cellStack.pop();
+    //   if(visited[cell.x][cell.y]) continue;
+    //   visited[cell.x][cell.y] = true;
+    //   var randInts = window.crypto.getRandomValues(new Uint8Array(2));
+    //   if(cell.x > 1 ) {
+    //     if(!visited[cell.x-1][cell.y]){
+    //       cellStack.push({x: cell.x - 1, y: cell.y});
+    //     }
+    //     var upperHole = (randInts[0] <= 50) ? true : false;
+    //     this.cells[cell.x][cell.y].up = upperHole;
+    //   }
+    //   if(cell.y > 1 ) {
+    //     if(!visited[cell.x][cell.y-1]){
+    //       cellStack.push({x: cell.x, y: cell.y - 1});
+    //     }
+    //     if(upperHole) {
+    //       this.cells[cell.x][cell.y].left = (randInts[1] <= 50) ? true : false;
+    //     }
+    //   }
+    // }
     console.log('finished generating level');
     this.addWallsToScene(scene);
   }
 
-  Level.prototype.addWallsToScene = function(scene) {
-    var wallSize = 100;
-    var offset = wallSize*this.cells.length/2;
-    var boxGeometry = new THREE.BoxGeometry(wallSize,wallSize,3*wallSize);
-    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
-    for(var i = 1; i < this.cells.length-1; i++) {
+  Level.prototype.carve = function(cx, cy, visited, scene) {
+    
 
-        var wall1 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall1.position.set(2*i*wallSize - offset, wallSize - offset, 0);
-        wall1.name = 'wall';
-        this.walls.push(wall1);
-        scene.add(wall1);
+    var stack = new Array();
+    stack.push({x:cx,y:cy});
 
-        var wall2 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall2.position.set(((2*i+1)*wallSize) - offset, wallSize - offset, 0);
-        wall2.name = 'wall';
-        this.walls.push(wall2);
-        scene.add(wall2);
+    while(stack.length > 0){
+      var cur = stack.pop();
+      cx = cur.x;
+      cy = cur.y;
 
-        var wall3 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall3.position.set(wallSize - offset, 2*i*wallSize - offset, 0);
-        wall3.name = 'wall';
-        this.walls.push(wall3);
-        scene.add(wall3);
+      var dir = [{x:-1,y:0},{x:0,y:-1},{x:1,y:0},{x:0,y:1}];
+      dir = shuffle(dir);
 
-        var wall4 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall4.position.set(wallSize - offset, (2*i+1)*wallSize - offset, 0);
-        wall4.name = 'wall';
-        this.walls.push(wall4);
-        scene.add(wall4);
+      for(var i = 0; i < dir.length; i++) {
+        var nx = cx + dir[i].x;
+        var ny = cy + dir[i].y;
 
-        var wall5 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall5.position.set(2*i*wallSize - offset, (2*this.cells.length-2)*wallSize - offset, 0);
-        wall5.name = 'wall';
-        this.walls.push(wall5);
-        scene.add(wall5);
+        //console.log('new location',nx,ny);
 
-        var wall6 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall6.position.set(((2*i+1)*wallSize) - offset, (2*this.cells.length-2)*wallSize - offset, 0);
-        wall6.name = 'wall';
-        this.walls.push(wall6);
-        scene.add(wall6);
-
-        var wall7 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall7.position.set((2*this.cells.length-2)*wallSize - offset, 2*i*wallSize - offset, 0);
-        wall7.name = 'wall';
-        this.walls.push(wall7);
-        scene.add(wall7);
-
-        var wall8 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall8.position.set((2*this.cells.length-2)*wallSize - offset, (2*i+1)*wallSize - offset, 0);
-        wall8.name = 'wall';
-        this.walls.push(wall8);
-        scene.add(wall8);
-
-    }
-    console.log(this.cells);
-    for(var i = 0; i < this.cells.length; i++) {
-      for(var j = 0; j < this.cells.length; j++) {
-        if(this.cells[i][j].up) {
-          //console.log('Adding up wall');
-          var wall = new THREE.Mesh(boxGeometry, boxMaterial);
-          wall.position.set((2*i+1)*wallSize - offset, 2*j*wallSize - offset, 0);
-          wall.name = 'wall';
-          this.walls.push(wall);
-          scene.add(wall);
-        }
-        if(this.cells[i][j].left) {
-          //console.log('Adding left wall');
-          var wall = new THREE.Mesh(boxGeometry, boxMaterial);
-          wall.position.set((2*i*wallSize) - offset, (2*j+1)*wallSize - offset, 0);
-          wall.name = 'wall';
-          this.walls.push(wall);
-          scene.add(wall);
-        }
-        if(this.cells[i][j].up && this.cells[i][j].left) {
-          var wall = new THREE.Mesh(boxGeometry, boxMaterial);
-          wall.position.set((2*i*wallSize) - offset, (2*j)*wallSize - offset, 0);
-          wall.name = 'wall';
-          this.walls.push(wall);
-          scene.add(wall);
+        if(ny >= 0 && ny <= this.cells.length - 1 && nx >= 0 && nx <= this.cells.length - 1 && !visited[nx][ny]) {
+            if(dir[i].x == -1) {
+              this.cells[cx][cy].left = false;
+              this.cells[nx][ny].right = false;
+            }
+            if(dir[i].x == 1) {
+              this.cells[cx][cy].right = false;
+              this.cells[nx][ny].left = false;
+            }
+            if(dir[i].y == 1) {
+              this.cells[cx][cy].up = false;
+              this.cells[nx][ny].down = false;
+            }
+            if(dir[i].y == -1) {
+              this.cells[cx][cy].down = false;
+              this.cells[nx][ny].up = false;
+            }
+            visited[nx][ny] = true;
+            stack.push({x:nx,y:ny});
         }
       }
     }
-    console.log(this.walls);
+
+    this.addWallsToScene(scene);
+
+  }
+
+  function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+  Level.prototype.newWall = function(x, y, z) {
+    var wallSize = 100;
+    var boxGeometry = new THREE.BoxGeometry(wallSize, wallSize, 3*wallSize);
+    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
+    var wall = new THREE.Mesh(boxGeometry, boxMaterial);
+
+    wall.position.set(x,y,z);
+    wall.name = 'wall';
+    this.walls2.push(wall);
+  }
+
+
+  Level.prototype.addWallsToScene = function(scene) {
+    var mergedGeo = new THREE.Geometry();
+    var wallSize = 100;
+    var offset = wallSize*this.cells.length/2;
+    for(var i = 0; i < this.cells.length; i++) {
+        this.walls.push(this.newWall(2*i*wallSize - offset, -wallSize - offset, 0));
+        this.walls.push(this.newWall(((2*i+1)*wallSize) - offset, -wallSize - offset, 0));
+        this.walls.push(this.newWall(-wallSize - offset, 2*i*wallSize - offset, 0));
+        this.walls.push(this.newWall(-wallSize - offset, (2*i+1)*wallSize - offset, 0));
+        this.walls.push(this.newWall(2*i*wallSize - offset, (2*this.cells.length-1)*wallSize - offset, 0));
+        this.walls.push(this.newWall(((2*i+1)*wallSize) - offset, (2*this.cells.length-1)*wallSize - offset, 0));
+        this.walls.push(this.newWall((2*this.cells.length-1)*wallSize - offset, 2*i*wallSize - offset, 0));
+        this.walls.push(this.newWall((2*this.cells.length-1)*wallSize - offset, (2*i+1)*wallSize - offset, 0));
+
+
+    }
+    for(var i = 0; i < this.cells.length; i++) {
+      for(var j = 0; j < this.cells.length; j++) {
+        var numWalls = 0;
+        if(this.cells[i][j].up) {
+          numWalls++;
+
+          this.walls.push(this.newWall((2*i)*wallSize - offset, (2*j+1)*wallSize - offset, 0));
+
+        }
+        if(this.cells[i][j].left) {
+          numWalls++;
+
+          this.walls.push(this.newWall((2*i-1)*wallSize - offset, (2*j)*wallSize - offset, 0));
+
+        }
+        if(this.cells[i][j].right) {
+          numWalls++;
+          
+          this.walls.push(this.newWall((2*i+1)*wallSize - offset, 2*j*wallSize - offset, 0));
+    
+        }
+        if(this.cells[i][j].down) {
+          numWalls++;
+
+          this.walls.push(this.newWall((2*i*wallSize) - offset, (2*j-1)*wallSize - offset, 0));
+
+        }
+
+        if(this.cells[i][j].up && this.cells[i][j].left) {
+          
+          this.walls.push(this.newWall((2*i-1)*wallSize - offset, (2*j+1)*wallSize - offset, 0));
+          
+        }
+
+        if(this.cells[i][j].up && this.cells[i][j].right) {
+          this.walls.push(this.newWall((2*i+1)*wallSize - offset, (2*j+1)*wallSize - offset, 0));
+          
+        }
+
+        if(this.cells[i][j].right && this.cells[i][j].down) {
+          this.walls.push(this.newWall((2*i+1)*wallSize - offset, (2*j-1)*wallSize - offset, 0));
+          
+        }
+        
+        if(this.cells[i][j].left && this.cells[i][j].down) {
+          this.walls.push(this.newWall((2*i-1)*wallSize - offset, (2*j-1)*wallSize - offset, 0));
+          
+        }
+
+        if(numWalls >= 3){
+          this.walls.push(this.newWall((2*i*wallSize) - offset, 2*j*wallSize - offset, 0));
+        }
+      }
+    }
+
+    for(var i = 0; i < this.walls2.length; i++) {
+      this.walls2[i].updateMatrix();
+      scene.add(this.walls2[i]);
+      //mergedGeo.merge(this.walls2[i].geometry, this.walls2.matrix, 0);
+    }
+
+    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
+    //mergedGeo.mergeVertices();
+    var mesh = new THREE.Mesh(mergedGeo, boxMaterial);
+    mesh.name = 'wall';
+    scene.add(mesh);
   }
 
   return Level;
