@@ -54,6 +54,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       console.log("rendUpdate being called from Actor subclass without passing scene!");
     }
     if (!this.rendInitted) {
+      this.scene = scene;
       this.rendInit(scene);
       this.rendInitted = true;
     }
@@ -66,7 +67,6 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     if(this.health <= 0) {
       this.onRemove();
     }
-    this.scene = scene;
     this.collision(scene);
     this.move();
 
@@ -101,7 +101,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       // And disable that direction if we do
       if (collisions.length > 0 && collisions[0].distance <= distance && collisions[0].object.name === 'wall') {
         //console.log(this.name,this.caster.ray.origin);
-        console.log(i, collisions[0].distance);
+        // console.log(i, collisions[0].distance);
         // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
         if ((i === 0 /*|| i === 1 || i === 7*/) && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.up = false;
@@ -137,7 +137,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
 
   Actor.prototype.attack = function(scene) {
     this.attackSound.play();
-    console.log(this.name,'attacking');
+    // console.log(this.name,'attacking');
     this.attackCooldown += this.attackDelay;
     // this.canMove = {'up':true, 'right': true, 'down': true, 'left': true};
     var collisions, i, distance, obstacles;
@@ -156,30 +156,37 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       // And disable that direction if we do
 
       for (var j = 0; j < collisions.length; j++) {
-        if (collisions.length > 0 && collisions[j].distance <= distance && collisions[j].object.name !== 'wall' && (this.name+"Sprite" !== collisions[j].object.name)) {
+        if (collisions.length > 0 && collisions[j].distance <= distance && this.validObject(collisions[j].object)) {
           if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
             // do something on collision.
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.x += 20;
+            collisions[j].object.obj.hurtSound.play();
             objHit=true;
             break;
           } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
             // do something on collision.
+
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.x -= 20;
+            collisions[j].object.obj.hurtSound.play();
             objHit=true;
             break;
           }
           if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
             // do something on collision.
+
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.y += 20;
+            collisions[j].object.obj.hurtSound.play();
             objHit=true;
             break;
           } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
             // do something on collision.
+
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.y -= 20;
+            collisions[j].object.obj.hurtSound.play();
             objHit=true;
             break;
           }
@@ -187,12 +194,54 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       }
     }
     if(objHit) this.hitSound.play();
+    this.drawArc(scene);
   }
 
   // For when this is removed from a scene.
   Actor.prototype.rendKill = function(scene) {
     if (!this.rendInitted) { return; } // never initted, nothing to kill
   };
+
+  Actor.prototype.validObject = function(obj) {
+    return ( obj.name !== 'wall' && 
+            (this.name+"Sprite" !== obj.name)  && 
+            (obj.name !== 'attackarc'));
+  }
+
+  Actor.prototype.drawArc = function(scene) {
+    var curve;
+    if(this.direction.x > 0) {  // Draw arc to the right
+        curve = new THREE.EllipseCurve(
+          this.position.x, this.position.y,             // ax, aY
+          this.radius, this.radius,            // xRadius, yRadius
+          -Math.PI/3, Math.PI/3, // aStartAngle, aEndAngle
+          false             // aClockwise
+      );
+    }
+    else {
+      curve = new THREE.EllipseCurve(
+          this.position.x, this.position.y,             // ax, aY
+          this.radius, this.radius,            // xRadius, yRadius
+          2*Math.PI/3, 4*Math.PI/3, // aStartAngle, aEndAngle
+          false             // aClockwise
+      );
+    }
+
+    var points = curve.getSpacedPoints( 20 );
+
+    var path = new THREE.Path();
+    var geometry = path.createGeometry( points );
+
+    var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+
+    var line = new THREE.Line( geometry, material );
+    line.name = 'attackarc';
+
+    scene.add( line );
+    setTimeout(function() {
+      scene.remove(line);
+    }, 200, line);
+  }
 
   return Actor;
 });

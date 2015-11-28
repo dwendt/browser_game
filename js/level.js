@@ -99,7 +99,7 @@ define(['three'], function(THREE) {
         if(!visited[cell.x-1][cell.y]){
           cellStack.push({x: cell.x - 1, y: cell.y});
         }
-        var upperHole = (randInts[0] >= 128) ? true : false;
+        var upperHole = (randInts[0] <= 50) ? true : false;
         this.cells[cell.x][cell.y].up = upperHole;
       }
       if(cell.y > 1 ) {
@@ -107,7 +107,7 @@ define(['three'], function(THREE) {
           cellStack.push({x: cell.x, y: cell.y - 1});
         }
         if(upperHole) {
-          this.cells[cell.x][cell.y].left = (randInts[1] >= 128) ? true : false;
+          this.cells[cell.x][cell.y].left = (randInts[1] <= 50) ? true : false;
         }
       }
     }
@@ -117,56 +117,56 @@ define(['three'], function(THREE) {
   }
 
   Level.prototype.addWallsToScene = function(scene) {
-    var wallSize = 250;
-    var offset = 250*this.cells.length/2;
+    var wallSize = 100;
+    var offset = wallSize*this.cells.length/2;
     var boxGeometry = new THREE.BoxGeometry(wallSize,wallSize,3*wallSize);
     var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
     for(var i = 1; i < this.cells.length-1; i++) {
 
         var wall1 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall1.position.set(2*i*wallSize, wallSize, 0);
+        wall1.position.set(2*i*wallSize - offset, wallSize - offset, 0);
         wall1.name = 'wall';
         this.walls.push(wall1);
         scene.add(wall1);
 
         var wall2 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall2.position.set(((2*i+1)*wallSize), wallSize, 0);
+        wall2.position.set(((2*i+1)*wallSize) - offset, wallSize - offset, 0);
         wall2.name = 'wall';
         this.walls.push(wall2);
         scene.add(wall2);
 
         var wall3 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall3.position.set(wallSize, 2*i*wallSize, 0);
+        wall3.position.set(wallSize - offset, 2*i*wallSize - offset, 0);
         wall3.name = 'wall';
         this.walls.push(wall3);
         scene.add(wall3);
 
         var wall4 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall4.position.set(wallSize, (2*i+1)*wallSize, 0);
+        wall4.position.set(wallSize - offset, (2*i+1)*wallSize - offset, 0);
         wall4.name = 'wall';
         this.walls.push(wall4);
         scene.add(wall4);
 
         var wall5 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall5.position.set(2*i*wallSize, (2*this.cells.length-2)*wallSize, 0);
+        wall5.position.set(2*i*wallSize - offset, (2*this.cells.length-2)*wallSize - offset, 0);
         wall5.name = 'wall';
         this.walls.push(wall5);
         scene.add(wall5);
 
         var wall6 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall6.position.set(((2*i+1)*wallSize), (2*this.cells.length-2)*wallSize, 0);
+        wall6.position.set(((2*i+1)*wallSize) - offset, (2*this.cells.length-2)*wallSize - offset, 0);
         wall6.name = 'wall';
         this.walls.push(wall6);
         scene.add(wall6);
 
         var wall7 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall7.position.set((2*this.cells.length-2)*wallSize, 2*i*wallSize, 0);
+        wall7.position.set((2*this.cells.length-2)*wallSize - offset, 2*i*wallSize - offset, 0);
         wall7.name = 'wall';
         this.walls.push(wall7);
         scene.add(wall7);
 
         var wall8 = new THREE.Mesh(boxGeometry, boxMaterial);
-        wall8.position.set((2*this.cells.length-2)*wallSize, (2*i+1)*wallSize, 0);
+        wall8.position.set((2*this.cells.length-2)*wallSize - offset, (2*i+1)*wallSize - offset, 0);
         wall8.name = 'wall';
         this.walls.push(wall8);
         scene.add(wall8);
@@ -178,7 +178,7 @@ define(['three'], function(THREE) {
         if(this.cells[i][j].up) {
           //console.log('Adding up wall');
           var wall = new THREE.Mesh(boxGeometry, boxMaterial);
-          wall.position.set((2*i+1)*wallSize, 2*j*wallSize, 0);
+          wall.position.set((2*i+1)*wallSize - offset, 2*j*wallSize - offset, 0);
           wall.name = 'wall';
           this.walls.push(wall);
           scene.add(wall);
@@ -186,14 +186,14 @@ define(['three'], function(THREE) {
         if(this.cells[i][j].left) {
           //console.log('Adding left wall');
           var wall = new THREE.Mesh(boxGeometry, boxMaterial);
-          wall.position.set((2*i*wallSize), (2*j+1)*wallSize, 0);
+          wall.position.set((2*i*wallSize) - offset, (2*j+1)*wallSize - offset, 0);
           wall.name = 'wall';
           this.walls.push(wall);
           scene.add(wall);
         }
         if(this.cells[i][j].up && this.cells[i][j].left) {
           var wall = new THREE.Mesh(boxGeometry, boxMaterial);
-          wall.position.set((2*i*wallSize), (2*j)*wallSize, 0);
+          wall.position.set((2*i*wallSize) - offset, (2*j)*wallSize - offset, 0);
           wall.name = 'wall';
           this.walls.push(wall);
           scene.add(wall);

@@ -20,6 +20,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     this.name="player";
     numPlayers++;
     this.attackDelay = 20;
+    this.damage = 100;
   };
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
@@ -71,14 +72,15 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
 
     this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
     this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
+    this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
 
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
     this.sphere = new THREE.Mesh( geometry, material );
-    scene.add( this.sphere );
+    //scene.add( this.sphere );
 
     scene.add(sprite);
-    this.showRaycastLines();
+    //this.showRaycastLines();
   };
 
   Player.prototype.showRaycastLines = function() {

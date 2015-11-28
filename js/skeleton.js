@@ -17,7 +17,7 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     Enemy.call(this); // Call the parent constructor
     this.name="skeleton";
     numSkeletons++;
-    this.attackDelay = 1000;
+    this.attackDelay = Math.floor(Math.random() * 100) + 50;
   };
 
   Skeleton.prototype = Object.create(Enemy.prototype); // is-a Enemy inheritance.
@@ -37,7 +37,14 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
       this.direction.y *= -1;
     }
 
-    if(!this.canMove.rightDir || !this.canMove.leftDir || !this.canMove.up || !this.canMove.down) console.log(this.canMove);
+    if( this.attackCooldown == 0 ) {
+      this.attack(this.scene);
+    }
+
+    // Update timing variables
+    this.attackCooldown -= (this.attackCooldown > 0 ? 1 : 0);
+
+    // if(!this.canMove.rightDir || !this.canMove.leftDir || !this.canMove.up || !this.canMove.down) console.log(this.canMove);
 
     if(this.canMove.rightDir && this.direction.x > 0)  this.position.setX(this.position.x + this.direction.x * 3);
     if(this.canMove.leftDir && this.direction.x < 0)  this.position.setX(this.position.x + this.direction.x * 3);
@@ -73,11 +80,16 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     this.animator = new TextureAnimator(skeletonMap, 9, 1, 9, 75);
     this.animRate = 1000;
 
+    
+    this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
+    this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
+    this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
+
+
     this.health = 100;
     
     scene.add(sprite);
 
-    console.log(this.sprite);
   };
 
   // Updates geometry related to this.
