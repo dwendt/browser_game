@@ -101,39 +101,30 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       // And disable that direction if we do
       if (collisions.length > 0 && collisions[0].distance <= distance && collisions[0].object.name === 'wall') {
         //console.log(this.name,this.caster.ray.origin);
+        console.log(i, collisions[0].distance);
         // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
-        if ((i === 0 || i === 1 || i === 7) && (this.name+"Sprite" !== collisions[0].object.name)) {
+        if ((i === 0 /*|| i === 1 || i === 7*/) && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.up = false;
-          this.position.y -= 1;
-          // console.log("i == " + i);
-          // console.log(this.name + " collided with " + collisions[0].object.name);
-          // console.log(collisions[0].distance);
+          this.position.y -= 3;
+
           // do something on collision.
-        } else if ((i === 3 || i === 4 || i === 5)  && (this.name+"Sprite" !== collisions[0].object.name)) {
+        } else if ((/*i === 3 ||*/ i === 4 /*|| i === 5*/)  && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.down = false;
-          this.position.y += 1;
-          // console.log("i == " + i);
-          // console.log(this.name + " collided with " + collisions[0].object.name);
-          // console.log(collisions[0].distance);
+          this.position.y += 3;
 
           // do something on collision.
         }
         if ((i === 1 || i === 2 || i === 3)  && (this.name+"Sprite" !== collisions[0].object.name)) {
           this.newCanMoveVals.rightDir = false;
-          this.position.x -= 1;
-          // console.log("i == " + i);
-          // console.log(this.name + " collided with " +  collisions[0].object.name);
-          // console.log(collisions[0].distance);
+          this.position.x -= 3;
+
 
           // do something on collision.
         } else if ((i === 5 || i === 6 || i === 7)  && (this.name+"Sprite" !== collisions[0].object.name)) {
-          // console.log(this);
-          // console.log(collisions[0]);
+
           this.newCanMoveVals.leftDir = false;
-          this.position.x += 1;
-          // console.log("i == " + i);
-          // console.log(this.name + " collided with " + collisions[0].object.name);
-          // console.log(collisions[0].distance);
+          this.position.x += 3;
+          
 
           // do something on collision.
         }
@@ -145,6 +136,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   }
 
   Actor.prototype.attack = function(scene) {
+    this.attackSound.play();
     console.log(this.name,'attacking');
     this.attackCooldown += this.attackDelay;
     // this.canMove = {'up':true, 'right': true, 'down': true, 'left': true};
@@ -181,19 +173,20 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
           if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
             // do something on collision.
             collisions[j].object.obj.health -= this.damage;
-            collisions[j].object.obj.position.y -= 20;
+            collisions[j].object.obj.position.y += 20;
             objHit=true;
             break;
           } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
             // do something on collision.
             collisions[j].object.obj.health -= this.damage;
-            collisions[j].object.obj.position.y += 20;
+            collisions[j].object.obj.position.y -= 20;
             objHit=true;
             break;
           }
         }
       }
     }
+    if(objHit) this.hitSound.play();
   }
 
   // For when this is removed from a scene.
