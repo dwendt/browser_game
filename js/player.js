@@ -9,7 +9,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
 
   // We should probably define typical player THREEJS geometry/colors/etc as private statics here, and jjust copy the right ones in rendinit based on the kind of player.
 
-  var warriorMap = THREE.ImageUtils.loadTexture( "js/assets/warrior.png" );
+  var warriorMap = THREE.ImageUtils.loadTexture( "js/assets/player/warrior.png" );
   warriorMap.magFilter = THREE.NearestFilter;
   var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
@@ -69,13 +69,36 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     this.scene = scene;
     this.sprite.obj = this;
 
+    this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
+    this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
+
+    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    this.sphere = new THREE.Mesh( geometry, material );
+    scene.add( this.sphere );
+
     scene.add(sprite);
+    this.showRaycastLines();
   };
+
+  Player.prototype.showRaycastLines = function() {
+    var mat = new THREE.LineBasicMaterial({color: 0x0000ff});
+    for(var i = 0; i < this.rays.length; i++) {
+      var geometry = new THREE.Geometry();
+      geometry.vertices.push(
+        new THREE.Vector3( 0, 0, 0 ),
+        this.rays[i]
+      );
+      //geometry.vertices[1].multiplyScalar(this.radius);
+      this.sprite.add(new THREE.Line(geometry,mat));
+    }
+  }
 
   // Updates geometry related to this.
   Player.prototype.rendUpdate = function(scene) {
     // Call the parent's.
     Actor.prototype.rendUpdate.call(this, scene);
+    this.sphere.position.set(this.position.x, this.position.y, this.parallax);
 
     // If we have any player-on-render stuff to do it'd go below.
     // this.move(); // keyboard state based movement

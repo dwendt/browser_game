@@ -11,9 +11,9 @@ define(['three'], function(THREE) {
   grassMap.repeat.set( 40, 40 ); // Larger values mean tinier texture.
 
   // Properties for the backing.
-  var backGeo = new THREE.PlaneGeometry(10000, 10000, 1); // TODO: planegeometry or sprite better?
+  var backGeo = new THREE.PlaneGeometry(30000, 30000, 1); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
-  
+  var wallMap = THREE.ImageUtils.loadTexture( "js/assets/wall.jpg" );
 
 
   // Constructor.
@@ -117,9 +117,10 @@ define(['three'], function(THREE) {
   }
 
   Level.prototype.addWallsToScene = function(scene) {
-    var wallSize = 50;
-    var boxGeometry = new THREE.BoxGeometry(wallSize,wallSize,wallSize);
-    var boxMaterial =  new THREE.MeshBasicMaterial({color: 0x00ffff});
+    var wallSize = 250;
+    var offset = 250*this.cells.length/2;
+    var boxGeometry = new THREE.BoxGeometry(wallSize,wallSize,3*wallSize);
+    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
     for(var i = 1; i < this.cells.length-1; i++) {
 
         var wall1 = new THREE.Mesh(boxGeometry, boxMaterial);

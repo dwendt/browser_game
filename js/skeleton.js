@@ -27,18 +27,22 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     // Simulate taking damage to test scene removal on death
     // this.health -= 1;
 
-    // if(Math.random() > .95) {
-    //   this.direction.x *= -1;
-    //   //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
-    //   this.sprite.scale.x *= -1;
-    // }
+    if(Math.random() > .95) {
+      this.direction.x *= -1;
+      //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
+      this.sprite.scale.x *= -1;
+    }
 
-    // if(Math.random() > .95) {
-    //   this.direction.y *= -1;
-    // }
+    if(Math.random() > .95) {
+      this.direction.y *= -1;
+    }
 
-    // if(this.canMove.left && this.canMove.right)  this.position.setX(this.position.x + this.direction.x * 2);
-    // if(this.canMove.up && this.canMove.down)  this.position.setY(this.position.y + this.direction.y * 2);
+    if(!this.canMove.rightDir || !this.canMove.leftDir || !this.canMove.up || !this.canMove.down) console.log(this.canMove);
+
+    if(this.canMove.rightDir && this.direction.x > 0)  this.position.setX(this.position.x + this.direction.x * 3);
+    if(this.canMove.leftDir && this.direction.x < 0)  this.position.setX(this.position.x + this.direction.x * 3);
+    if(this.canMove.up && this.direction.y > 0)  this.position.setY(this.position.y + this.direction.y * 3);
+    if(this.canMove.down && this.direction.y < 0)  this.position.setY(this.position.y + this.direction.y * 3);
 
   };
 

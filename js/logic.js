@@ -16,6 +16,10 @@ define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, 
     this.curLevel = 0;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.actors.push(new Skeleton());
+    this.actors.push(new Skeleton());
+    this.actors.push(new Skeleton());
+    this.actors.push(new Skeleton());
+    this.actors.push(new Skeleton());
 
     // TODO: since we have no menu, just init a new level.
     this.level = null;
@@ -41,7 +45,8 @@ define(["three", "level", "player", "skeleton"], function(THREE, Level, Player, 
     rendUpdate: function(scene) {
       if (this.player) {
         this.player.rendUpdate(scene);
-        this.renderer.setCameraPos(this.player.position.x, this.player.position.y, 7000);
+        this.renderer.setCameraPos(this.player.position.x, this.player.position.y, 20000);
+        //console.log(this.renderer.camera);
       }
 
       if (this.level) {
