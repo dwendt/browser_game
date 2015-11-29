@@ -39,7 +39,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
         new THREE.Vector3( 0, 0, 0 ),
         this.rays[i]
       );
-      //geometry.vertices[1].multiplyScalar(this.radius);
+      // geometry.vertices[1].multiplyScalar(this.radius);
       this.sprite.add(new THREE.Line(geometry,mat));
     }
   }
@@ -79,6 +79,11 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       var delta = this.clock.getDelta();
       this.animator.update(delta*this.animRate);
     }
+    if (this.animator2) {
+      var delta = this.clock.getDelta();
+      this.animator2.update(delta*this.animRate);
+    }
+
 
     if(this.health <= 0) {
       this.onRemove();
@@ -174,38 +179,56 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       // And disable that direction if we do
 
       for (var j = 0; j < collisions.length; j++) {
-        if (collisions.length > 0 && collisions[j].distance <= distance && this.validObject(collisions[j].object)) {
-          if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+        if (collisions[j].object.name === 'wall') break;
+        if (collisions[j].distance <= distance && this.validObject(collisions[j].object)) {
+          //console.log(this.name, collisions[j].object.obj.name, collisions[j].distance);
+          if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
             // do something on collision.
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.x += 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
+            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            var sphere = new THREE.Mesh( geometry, material );
+            scene.add( sphere );
             break;
-          } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+          } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
             // do something on collision.
 
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.x -= 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
+            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            var sphere = new THREE.Mesh( geometry, material );
+            scene.add( sphere );
             break;
           }
-          if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+          if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1) {
             // do something on collision.
 
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.y += 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
+            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            var sphere = new THREE.Mesh( geometry, material );
+            scene.add( sphere );
             break;
-          } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1 && (this.name+"Sprite" !== collisions[j].object.name)) {
+          } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1) {
             // do something on collision.
 
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.y -= 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
+            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            var sphere = new THREE.Mesh( geometry, material );
+            scene.add( sphere );
             break;
           }
         }
@@ -221,9 +244,18 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   };
 
   Actor.prototype.validObject = function(obj) {
-    return ( obj.name !== 'wall' && 
-            (this.name+"Sprite" !== obj.name)  && 
-            (obj.name !== 'attackarc'));
+    if(obj.name === 'wall') return false;
+    if(obj.obj != undefined) {
+      if(obj.obj.name === this.name+"Sprite") {
+        return false;
+      }
+      if(obj.obj.name === this.name) {
+        return false;
+      }
+    }
+    if(obj.name === 'attackarc') return false;
+
+    return true;
   }
 
   Actor.prototype.drawArc = function(scene) {

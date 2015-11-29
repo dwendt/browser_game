@@ -73,7 +73,7 @@ define(['three'],function(THREE) {
 
     // Actual renderer
     canvRenderer = new THREE.WebGLRenderer();
-    canvRenderer.setClearColor( 0xFFFFFF );
+    canvRenderer.setClearColor( 0x000000, 0 );
     canvRenderer.setPixelRatio( aspectRatio );
     canvRenderer.setSize( canvWid, canvHei );
     document.body.appendChild(canvRenderer.domElement);

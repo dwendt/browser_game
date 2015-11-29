@@ -7,16 +7,20 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
   // Private static.
   var numSkeletons = 0;
 
-  var skeletonMap = THREE.ImageUtils.loadTexture( "js/assets/skeleton/right.png" );
-  skeletonMap.magFilter = THREE.NearestFilter;
+  var skeletonRightMap = THREE.ImageUtils.loadTexture( "js/assets/skeleton/right.png" );
+  skeletonRightMap.magFilter = THREE.NearestFilter;
+  var skeletonLeftMap = THREE.ImageUtils.loadTexture( "js/assets/skeleton/left.png" );
+  skeletonLeftMap.magFilter = THREE.NearestFilter;
 
-  var skeletonSpriteMat = new THREE.SpriteMaterial( { map: skeletonMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  var skeletonSpriteMat = new THREE.SpriteMaterial( { map: skeletonRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
 
   // Constructor.
-  function Skeleton() {
+  function Skeleton(x, y) {
     Enemy.call(this); // Call the parent constructor
     this.name="skeleton";
     numSkeletons++;
+    this.initX = x || 0;
+    this.initY = y || 0;
     this.attackDelay = Math.floor(Math.random() * 100) + 50;
   };
 
@@ -29,8 +33,14 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
 
     if(Math.random() > .95) {
       this.direction.x *= -1;
+      if(this.direction.x > 0) {
+        this.sprite.material.map = skeletonRightMap;
+      }
+      else {
+        this.sprite.material.map = skeletonLeftMap;
+      }
       //this.animator = new TextureAnimator( (( this.direction.x > 0) ? skeletonMapRightWalk : skeletonMapLeftWalk ), 9, 1, 9, 75);
-      this.sprite.scale.x *= -1;
+      //this.sprite.scale.x *= -1;
     }
 
     if(Math.random() > .95) {
@@ -70,14 +80,17 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     sprite.name = "skeletonSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;
     this.sprite.obj = this;
-    this.position.set(30,220,0);
+    this.position.set(this.initX, this.initY, 0);
     //this.sprite.position = (this.position);
     this.direction.x = 1;
     this.direction.y = -1;
     this.position.z = 10;
     this.clock = new THREE.Clock();
-    this.animator = new TextureAnimator(skeletonMap, 9, 1, 9, 75);
+    this.animator = new TextureAnimator(skeletonRightMap, 9, 1, 9, 75);
     this.animRate = 1000;
+    this.animator2 = new TextureAnimator(skeletonLeftMap, 9, 1, 9, 75);
+    console.log(this.animator);
+    console.log(this.animator2);
 
     
     this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');

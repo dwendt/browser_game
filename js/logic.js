@@ -10,17 +10,13 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
     this.renderer = renderer;       // Given to us by the main controller.
     console.log("setting callback...");
     renderer.setCallback(this);
-    this.player = new Player();         // Create a new player object.
+
+    // Player creation moved to InitLevel
 
     // Variables used for game state
     this.inMenu = true;
     this.curLevel = 0;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
-    this.actors.push(new Skeleton());
-    this.actors.push(new Skeleton());
-    this.actors.push(new Skeleton());
-    this.actors.push(new Skeleton());
-    this.actors.push(new Skeleton());
     this.score = 0;
 
     // TODO: since we have no menu, just init a new level.
@@ -36,6 +32,15 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
     // Creates a new level, positions the player.
     initLevel: function() {
       this.level = new Level();
+
+      // Custom async controller because reasons
+      var monsterInterval = setInterval(function(level, f, th){
+        if(th.level.finishedLoading) {
+          th.createMonsters();
+          th.initPlayer();
+          clearInterval(monsterInterval);
+        }
+      }, 50, this.level, this.createMonsters, this);
     },
     // Handle things we need to do when we transition off our current level.
     storeLevel: function() {
@@ -49,10 +54,14 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
     },
     // Called when a new frame is rendered, should make renderables update geometry/color/etc.
     rendUpdate: function(scene) {
+
       if (this.player) {
         this.player.rendUpdate(scene);
         this.renderer.setCameraPos(this.player.position.x, this.player.position.y, 20000);
-        //console.log(this.renderer.camera);
+        $('#playerHealth').text(this.player.health + " / " + 100);
+        if(this.player.removal) {
+          // Gameover code goes here
+        }
       }
 
       if (this.level) {
@@ -64,29 +73,52 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
         if(this.actors[i]) {
 
           this.actors[i].rendUpdate(scene);
-          // if(this.actors[i].name == 'player'){
-            console.log($('#playerHealth'));
-            $('#playerHealth').text(this.actors[i].health + " / " + 100);
-          // }
         }
 
         // remove from scene if necessary
         if(this.actors[i].removal) {
-          if(this.actors[i].name === 'player') {
-            //Gameover
-          }
-          else {
-            this.actors[i] = null;
-            this.actors.splice(i--,1);
-            this.score += 10;
-            $('#playerScore').text("Score: " + this.score);
-          }
+          this.actors[i] = null;
+          this.actors.splice(i--,1);
+          this.score += 10;
+          $('#playerScore').text("Score: " + this.score);
+          $('#monsterText').text(this.actors.length + " Monsters remain.");
         }
 
       }
 
       if(this.actors.length == 1) { // Only the player is left
         this.nextLevel();
+      }
+    },
+
+    createMonsters: function() {
+      this.initSkeletons();
+    },
+
+    initPlayer: function() {
+      var newX = Math.floor(Math.random()*this.level.numCells);
+      var newY = Math.floor(Math.random()*this.level.numCells);
+
+      //Make sure there's no wall where we want to place the Player
+      while(this.level.cells[newX][newY].filled) {
+        newX = Math.floor(Math.random()*this.level.numCells);
+        newY = Math.floor(Math.random()*this.level.numCells);
+      }
+      this.player = new Player((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset);
+    },
+
+    initSkeletons: function() {
+      var numSkeletons = Math.floor(Math.random() * 10 + 5);
+      for(var i = 0; i < numSkeletons; i++) {
+        var newX = Math.floor(Math.random()*this.level.numCells);
+        var newY = Math.floor(Math.random()*this.level.numCells);
+
+        //Make sure there's no wall where we want to place the skeleton
+        while(this.level.cells[newX][newY].filled) {
+          newX = Math.floor(Math.random()*this.level.numCells);
+          newY = Math.floor(Math.random()*this.level.numCells);
+        }
+        this.actors.push(new Skeleton((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset));
       }
     }
 
