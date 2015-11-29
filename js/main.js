@@ -39,5 +39,8 @@ requirejs(['renderer', 'logic'], function(Renderer, GameLogic){
   // Logic needs a reference to the renderer to handle draws.
   var core_logic = new GameLogic(core_renderer);
   core_renderer.animate();
+
+  // Shows rendering stats. Click to go FPS / ms per render / memory usage
+  (function(){var script=window.document.createElement('script');script.onload=function(){var stats=new Stats();stats.domElement.style.cssText='position:fixed;left:0;top:0;z-index:10000';window.document.body.appendChild(stats.domElement);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//rawgit.com/mrdoob/stats.js/master/build/stats.min.js';window.document.head.appendChild(script);})()
 });
 
