@@ -17,12 +17,17 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   var keyboard = new THREEx.KeyboardState();
 
   // Constructor. Inherits Actor.
-  function Player() {
+  function Player(x, y) {
     Actor.call(this); // Call the parent constructor
     this.name="player";
     numPlayers++;
     this.attackDelay = 20;
     this.damage = 100;
+    this.initX = x || 0;
+    this.initY = y || 0;
+    this.position.x = x;
+    this.position.y = y;
+    //console.log('Player INITX AND Y',this.initX,this.initY);
   };
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
@@ -69,7 +74,9 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     // http://threejs.org/docs/#Reference/Objects/Sprite
     var sprite = new THREE.Sprite( warriorSpriteMat );
 
-    sprite.position.set(0,0,this.parallax);
+
+
+    sprite.position.set(this.initX,this.initY,this.parallax);
     sprite.scale.set(this.scale,this.scale,1);
     sprite.name = "playerSprite"; //TODO: random GUID? store them. also.
     this.sprite = sprite;

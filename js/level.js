@@ -78,7 +78,7 @@ define(['three'], function(THREE) {
       this.cells[i] = [];
       visited[i] = [];
       for(var j = 0; j < this.numCells; j++) {
-        this.cells[i][j] = {up:true, left:true, down:true, right:true};
+        this.cells[i][j] = {up:true, left:true, down:true, right:true, filled:false};
         visited[i][j] = false;
       }
     }
@@ -185,9 +185,9 @@ define(['three'], function(THREE) {
 }
 
   Level.prototype.newWall = function(x, y, z) {
-    var wallSize = 100;
+    var wallSize = this.wallSize;
     var boxGeometry = new THREE.BoxGeometry(wallSize, wallSize, 3*wallSize);
-    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
+    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
     var wall = new THREE.Mesh(boxGeometry, boxMaterial);
 
     wall.position.set(x,y,z);
@@ -198,8 +198,10 @@ define(['three'], function(THREE) {
 
   Level.prototype.addWallsToScene = function(scene) {
     var mergedGeo = new THREE.Geometry();
-    var wallSize = 100;
+    var wallSize = 200;
     var offset = wallSize*this.cells.length/2;
+    this.offset = offset;
+    this.wallSize = wallSize;
     for(var i = 0; i < this.cells.length; i++) {
         this.walls.push(this.newWall(2*i*wallSize - offset, -wallSize - offset, 0));
         this.walls.push(this.newWall(((2*i+1)*wallSize) - offset, -wallSize - offset, 0));
@@ -262,6 +264,7 @@ define(['three'], function(THREE) {
         }
 
         if(numWalls >= 3){
+          this.cells[i][j].filled = true;
           this.walls.push(this.newWall((2*i*wallSize) - offset, 2*j*wallSize - offset, 0));
         }
       }
@@ -273,11 +276,12 @@ define(['three'], function(THREE) {
       //mergedGeo.merge(this.walls2[i].geometry, this.walls2.matrix, 0);
     }
 
-    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
-    //mergedGeo.mergeVertices();
-    var mesh = new THREE.Mesh(mergedGeo, boxMaterial);
-    mesh.name = 'wall';
-    scene.add(mesh);
+    // var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
+    // mergedGeo.mergeVertices();
+    // var mesh = new THREE.Mesh(mergedGeo, boxMaterial);
+    // mesh.name = 'wall';
+    // scene.add(mesh);
+    this.finishedLoading = true;
   }
 
   return Level;
