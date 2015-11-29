@@ -110,6 +110,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     // For each ray
     this.newCanMoveVals = {'up':true, 'rightDir': true, 'down': true, 'leftDir': true};
     for (i = 0; i < this.rays.length; i += 1) {
+      if(1%2 == 0) continue;
       // We reset the raycaster to this direction
       this.caster.set(this.position, this.rays[i]);
       // Test if we intersect with any obstacle mesh
@@ -182,16 +183,15 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
         if (collisions[j].object.name === 'wall') break;
         if (collisions[j].distance <= distance && this.validObject(collisions[j].object)) {
           //console.log(this.name, collisions[j].object.obj.name, collisions[j].distance);
+
+          console.log(this);
+          console.log(collisions[j].object);
           if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
             // do something on collision.
             collisions[j].object.obj.health -= this.damage;
             collisions[j].object.obj.position.x += 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
-            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-            var sphere = new THREE.Mesh( geometry, material );
-            scene.add( sphere );
             break;
           } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
             // do something on collision.
@@ -200,10 +200,6 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
             collisions[j].object.obj.position.x -= 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
-            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-            var sphere = new THREE.Mesh( geometry, material );
-            scene.add( sphere );
             break;
           }
           if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1) {
@@ -213,10 +209,6 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
             collisions[j].object.obj.position.y += 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
-            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-            var sphere = new THREE.Mesh( geometry, material );
-            scene.add( sphere );
             break;
           } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1) {
             // do something on collision.
@@ -225,10 +217,6 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
             collisions[j].object.obj.position.y -= 20;
             collisions[j].object.obj.hurtSound.play();
             objHit=true;
-            var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-            var sphere = new THREE.Mesh( geometry, material );
-            scene.add( sphere );
             break;
           }
         }
@@ -254,6 +242,8 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
       }
     }
     if(obj.name === 'attackarc') return false;
+
+    if(this.position.distanceTo(obj.position) > this.radius*2) return false;
 
     return true;
   }

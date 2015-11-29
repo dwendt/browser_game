@@ -57,7 +57,7 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
 
       if (this.player) {
         this.player.rendUpdate(scene);
-        this.renderer.setCameraPos(this.player.position.x, this.player.position.y, 20000);
+        this.renderer.setCameraPos(this.player.position.x, this.player.position.y, this.currentZoom);
         $('#playerHealth').text(this.player.health + " / " + 100);
         if(this.player.removal) {
           // Gameover code goes here
@@ -105,6 +105,7 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
         newY = Math.floor(Math.random()*this.level.numCells);
       }
       this.player = new Player((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset);
+      this.renderer.setCameraLookAt(this.player.position);
     },
 
     initSkeletons: function() {

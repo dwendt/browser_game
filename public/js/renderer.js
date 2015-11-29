@@ -17,7 +17,7 @@ define(['three'],function(THREE) {
 
   // Creates the canvas/initializes rendering.
   function Renderer() {
-    var canvWid = window.innerWidth;
+    var canvWid = window.innerWidth * .8;
     var canvHei = window.innerHeight;
     var aspectRatio = canvWid/canvHei;
     console.log("canv wid, hei, ratio: ", canvWid, canvHei, aspectRatio);
@@ -76,18 +76,22 @@ define(['three'],function(THREE) {
     canvRenderer.setClearColor( 0x000000, 0 );
     canvRenderer.setPixelRatio( aspectRatio );
     canvRenderer.setSize( canvWid, canvHei );
-    document.body.appendChild(canvRenderer.domElement);
+    var container = document.getElementById('canvas');
+    console.log(container);
+    document.body.appendChild(container);
+    container.appendChild(canvRenderer.domElement);
 
     window.addEventListener( 'resize', function() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.left = window.innerWidth / -2;
-      camera.right = window.innerWidth / 2;
+      var width = window.innerWidth * .8;
+      camera.aspect = width / window.innerHeight;
+      camera.left = width / -2;
+      camera.right = width / 2;
       camera.top = window.innerHeight / 2;
       camera.bottom = window.innerHeight / -2;
 
       camera.updateProjectionMatrix();
 
-      canvRenderer.setSize(window.innerWidth, window.innerHeight);
+      canvRenderer.setSize(width, window.innerHeight);
     }, false );
 
     return Renderer;
