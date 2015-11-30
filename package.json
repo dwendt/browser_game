@@ -1,0 +1,26 @@
+{
+  "name": "dungeon_explorer",
+  "version": "1.0.0",
+  "description": "Provides users with a chat room and allows for private messages to be sent to users.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwendt/browser_game.git"
+  },
+  "author": "group14",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dwendt/browser_game/issues"
+  },
+  "homepage": "https://github.com/dwendt/browser_game#readme",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.10.2",
+    "lodash": "^3.10.1",
+    "redis": "^2.4.2",
+    "socket.io": "^1.3.7"
+  }
+}

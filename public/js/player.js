@@ -32,6 +32,12 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.
 
+  Player.prototype.destroyPlayer = function() {
+    console.log('removing player');
+    this.scene.remove(this.sprite);
+    this.scene.remove(this.sphere);
+  }
+
   Player.prototype.move = function() {
     // console.log(this.canMove);
     if(keyboard.pressed('up') && this.canMove.up) {
