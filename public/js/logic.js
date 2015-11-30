@@ -2,7 +2,29 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "bootstrap", "jquery", "keyboard"], function(THREE, Level, Player, Skeleton, bootstrap, $, THREEx) {
+define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap"], function(THREE, Level, Player, Skeleton, THREEx, $) {
+
+  console.log('HEY IM HERE');
+
+  $('#submissionForm').on('submit', function(e) {
+    e.preventDefault();
+    var name = $("#usernameinput").val();
+    console.log(name);
+    var score = parseInt($("#modalScore").val());
+    console.log(score);
+    console.log(name+" "+ score);
+    $.ajax({
+      url : "/score",
+      type: "POST",
+      data: {username:name, userscore:score},
+      success: function (data) {
+          $("#modalScore").html(data);
+      },
+      error: function (jXHR, textStatus, errorThrown) {
+          alert(errorThrown);
+      }
+    });
+  });
 
   // Constructor for this.
   function GameLogic(renderer) {
@@ -18,7 +40,7 @@ define(["three", "level", "player", "skeleton", "bootstrap", "jquery", "keyboard
     this.curLevel = 0;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.score = 0;
-    this.pausedHealth = 10;
+    this.pausedHealth = 100;
 
     // TODO: since we have no menu, just init a new level.
     this.level = null;
@@ -107,6 +129,8 @@ define(["three", "level", "player", "skeleton", "bootstrap", "jquery", "keyboard
             this.score += 10;
           }
           $('#playerScore').text("Score: " + this.score);
+          $('#hiddenScoreDiv').text(this.score);
+          $('#modalScore').val(this.score);
           $('#monsterText').text(this.actors.length + " Monsters remain.");
           if(this.actors.length == 0 && this.player.health > 0) { // Only the player is left
             this.nextLevel();
