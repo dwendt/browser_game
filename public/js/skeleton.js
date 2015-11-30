@@ -47,12 +47,9 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
       this.direction.y *= -1;
     }
 
-    if( this.attackCooldown == 0 ) {
+    if( this.attackCooldown <= 0 && this.position.distanceTo(this.player.position) <= 5 * this.radius ) {
       this.attack(this.scene);
     }
-
-    // Update timing variables
-    this.attackCooldown -= (this.attackCooldown > 0 ? 1 : 0);
 
     // if(!this.canMove.rightDir || !this.canMove.leftDir || !this.canMove.up || !this.canMove.down) console.log(this.canMove);
 
@@ -93,12 +90,10 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     // console.log(this.animator2);
 
     
-    this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
-    this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
-    this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
-
-
-    this.health = 100;
+    this.attackSound = new Audio('js/assets/skeleton/sounds/attackSound.wav');
+    this.hitSound = new Audio('js/assets/skeleton/sounds/hitSound.wav');
+    // this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
+    this.deathSound = new Audio('js/assets/skeleton/sounds/deathSound.wav');
     
     scene.add(sprite);
     // this.showRaycastLines();

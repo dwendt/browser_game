@@ -19,6 +19,8 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     this.damage = 10;
     this.removal = false;
 
+    this.fps = 60;
+
     this.scale = this.radius*2;
     
     // Raycaster and  Ray in each direction for collision detection
@@ -89,6 +91,12 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     if(this.health <= 0) {
       this.onRemove();
     }
+
+    // Update timing variables
+
+
+    this.attackCooldown -= (this.attackCooldown > 0) ? (60/this.fps) : 0;
+
     this.collision(scene);
     this.move();
 
@@ -172,6 +180,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     obstacles = scene.children;
     // For each ray
     var objHit = false;
+    var collObj;
     for (i = 0; i < this.rays.length; i += 1) {
       if(objHit) break;
       // We reset the raycaster to this direction
@@ -184,42 +193,54 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
         if (collisions[j].object.name === 'wall') break;
         if (collisions[j].distance <= distance && this.validObject(collisions[j].object)) {
           //console.log(this.name, collisions[j].object.obj.name, collisions[j].distance);
+
+          collObj = collisions[j].object.obj;
+
           if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
             // do something on collision.
-            collisions[j].object.obj.health -= this.damage;
-            collisions[j].object.obj.position.x += 20;
-            collisions[j].object.obj.hurtSound.play();
+            collObj.health -= this.damage;
+            collObj.position.x += 20;
+            if(collObj.hurtSound) {
+              collObj.hurtSound.play();
+            }
             objHit=true;
             break;
           } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
             // do something on collision.
 
-            collisions[j].object.obj.health -= this.damage;
-            collisions[j].object.obj.position.x -= 20;
-            collisions[j].object.obj.hurtSound.play();
+            collObj.health -= this.damage;
+            collObj.position.x -= 20;
+            if(collObj.hurtSound) {
+              collObj.hurtSound.play();
+            }            
             objHit=true;
             break;
           }
           if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1) {
             // do something on collision.
 
-            collisions[j].object.obj.health -= this.damage;
-            collisions[j].object.obj.position.y += 20;
-            collisions[j].object.obj.hurtSound.play();
+            collObj.health -= this.damage;
+            collObj.position.y += 20;
+            if(collObj.hurtSound) {
+              collObj.hurtSound.play();
+            }
             objHit=true;
             break;
           } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1) {
             // do something on collision.
 
-            collisions[j].object.obj.health -= this.damage;
-            collisions[j].object.obj.position.y -= 20;
-            collisions[j].object.obj.hurtSound.play();
+            collObj.health -= this.damage;
+            collObj.position.y -= 20;
+            if(collObj.hurtSound) {
+              collObj.hurtSound.play();
+            }
             objHit=true;
             break;
           }
         }
       }
     }
+
     if(objHit) this.hitSound.play();
     this.drawArc(scene);
   }
@@ -247,11 +268,12 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   }
 
   Actor.prototype.drawArc = function(scene) {
+    console.log('drawing arc');
     var curve;
     if(this.direction.x > 0) {  // Draw arc to the right
         curve = new THREE.EllipseCurve(
           this.position.x, this.position.y,             // ax, aY
-          this.radius, this.radius,            // xRadius, yRadius
+          this.radius*1.5, this.radius*1.5,            // xRadius, yRadius
           -Math.PI/3, Math.PI/3, // aStartAngle, aEndAngle
           false             // aClockwise
       );
@@ -259,7 +281,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     else {
       curve = new THREE.EllipseCurve(
           this.position.x, this.position.y,             // ax, aY
-          this.radius, this.radius,            // xRadius, yRadius
+          this.radius*1.5, this.radius*1.5,            // xRadius, yRadius
           2*Math.PI/3, 4*Math.PI/3, // aStartAngle, aEndAngle
           false             // aClockwise
       );
