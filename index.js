@@ -23,14 +23,6 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
-app.get(/^(.+)$/, function(req, res) { 
-  res.sendFile(__dirname + '/public/' + req.params[0]); 
-});
-
-app.get('/game', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
-
 // Store a new high score
 app.post('/score', function(req, res){
   client.rpush(['scores', JSON.stringify(req.body)], function(err, reply) {
@@ -56,7 +48,11 @@ app.get('/flushDB', function(req, res) {
     console.log(reply);
     res.status(200).json(reply);
   });
-})
+});
+
+app.get(/^(.+)$/, function(req, res) { 
+  res.sendFile(__dirname + '/public/' + req.params[0]); 
+});
 
 //socket io
 
