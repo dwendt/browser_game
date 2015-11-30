@@ -9,7 +9,7 @@ this repo is the frontend. we should use another for the backend when that comes
 - [x] topdown game
 - [x] 2d game
 - [x] player character
-- [ ] weapons/attacks?
+- [x] weapons/attacks?
 - [x] enemies?
 - [x] some kind of level design?
 - [ ] dank shader / camera / etc effects
@@ -17,4 +17,4 @@ this repo is the frontend. we should use another for the backend when that comes
 - [ ] main menu
 - [x] loading system (aka refactor the junk textureloads sprinkled about)
 - [ ] multiplayer?
-- [ ] chat? -- probably requires working on HUD first
+- [x] chat? -- probably requires working on HUD first
