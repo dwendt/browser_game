@@ -35,7 +35,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
     // Variables used for game state
     this.inMenu = true;
-    this.curLevel = 5;              // Should determine difficulty, stage contents, loot...
+    this.curLevel = 1;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.score = 0;
     this.pausedHealth = 100;
