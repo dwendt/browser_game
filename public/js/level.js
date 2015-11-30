@@ -6,25 +6,27 @@ define(['three'], function(THREE) {
 
   // Private static.
   // Grass texture for the default backing. TODO: loading screen instead?
-  var grassMap = THREE.ImageUtils.loadTexture( "js/assets/grass.png" );
+  var grassMap = THREE.ImageUtils.loadTexture( "js/assets/level/grass.png" );
   grassMap.wrapS = grassMap.wrapT = THREE.RepeatWrapping;
   grassMap.repeat.set( 40, 40 ); // Larger values mean tinier texture.
 
   // Properties for the backing.
-  var backGeo = new THREE.PlaneGeometry(30000, 30000, 1); // TODO: planegeometry or sprite better?
+  var backGeo = new THREE.PlaneGeometry(30000, 30000, 0); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
-  var wallMap = THREE.ImageUtils.loadTexture( "js/assets/wall.jpg" );
+  var wallMap = THREE.ImageUtils.loadTexture( "js/assets/level/wall.jpg" );
 
 
   // Constructor.
-  function Level() {
+  function Level(curLevel) {
+    this.curLevel = curLevel;
+    console.log(this.curLevel);
     this.rendInitted = false;
     this.cells = [];
     this.walls = [];
     this.walls2 = new Array();
+    this.wallSize = 250;
     this.numCells = Math.floor(Math.random()*10 + 5);
-    this.zoomLevels = [2000, 4000, 8000, 16000];
-    console.log(this.zoomLevels);
+    this.zoomLevels = [2000, 4000, 8000, 16000, 32000];
   };
 
   // Instanced destructor...
@@ -33,6 +35,15 @@ define(['three'], function(THREE) {
   };
 
   Level.prototype.destroyLevel = function() {
+
+    if(this.newBack) {
+      this.scene.remove(this.newBack);
+    }
+
+    if(this.innerBack) {
+      this.scene.remove(this.innerBack);
+    }
+
     for(var i = this.walls2.length - 1; i >= 0; i--) {
       this.scene.remove(this.walls2[i]);
       this.walls2.splice(i,1);
@@ -43,24 +54,48 @@ define(['three'], function(THREE) {
   Level.prototype.rendInit = function(scene) {
     this.scene = scene;
     console.log("creating backing...");
-    var newBack = new THREE.Mesh( backGeo, backMat );
-    newBack.position.x = 0;
-    newBack.position.y = 0;
-    newBack.position.z = 0;
-    newBack.name = "backing"; // TODO: unique name GUIDs !!IMPORTANT!! !!HOW DO WE DO THIS!!
-    /*
-    // random colored lights?
-    var ambientLight = new THREE.AmbientLight( 0.5 * 0x10 );
-    scene.add( ambientLight );
-    var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
-    directionalLight.position.x = Math.random() - 0.5;
-    directionalLight.position.y = Math.random() - 0.5;
-    directionalLight.position.z = Math.random() - 0.5;
-    directionalLight.position.normalize();
-    scene.add( directionalLight );
-    */
+    console.log(this.curLevel);
+    if(this.curLevel == 1) {
+      this.newBack = new THREE.Mesh( backGeo, backMat );
+      this.newBack.position.x = 0;
+      this.newBack.position.y = 0;
+      this.newBack.position.z = 0;
+      this.newBack.name = "backing"; // TODO: unique name GUIDs !!IMPORTANT!! !!HOW DO WE DO THIS!!
+      /*
+      // random colored lights?
+      var ambientLight = new THREE.AmbientLight( 0.5 * 0x10 );
+      scene.add( ambientLight );
+      var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
+      directionalLight.position.x = Math.random() - 0.5;
+      directionalLight.position.y = Math.random() - 0.5;
+      directionalLight.position.z = Math.random() - 0.5;
+      directionalLight.position.normalize();
+      scene.add( directionalLight );
+      */
+      console.log('adding newBack');
+      scene.add(this.newBack);
+    }
 
-    scene.add(newBack);
+    
+    var innerBackGeo = new THREE.PlaneGeometry( 2 * this.numCells * this.wallSize, 2 * this.numCells * this.wallSize, 1);
+    
+    var innerBackMap = THREE.ImageUtils.loadTexture( "js/assets/level/darkWood.jpg" );
+    if(this.curLevel <= 3) {
+      innerBackMap = THREE.ImageUtils.loadTexture( "js/assets/level/woodFloor.jpg");
+    }
+
+    innerBackMap.wrapS = innerBackMap.wrapT = THREE.RepeatWrapping;
+    innerBackMap.repeat.set( this.numCells, this.numCells ); 
+
+    var innerBackMat = new THREE.MeshLambertMaterial( { map: innerBackMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
+    this.innerBack = new THREE.Mesh( innerBackGeo, innerBackMat );
+
+    this.innerBack.position.set(((this.numCells-1)*this.wallSize)/2, ((this.numCells-1)*this.wallSize)/2 ,1);
+
+    console.log(this.innerBack);
+    console.log(this.wallSize);
+    scene.add(this.innerBack);
+    
     this.generateMaze(scene);
   };
 
@@ -83,6 +118,10 @@ define(['three'], function(THREE) {
   Level.prototype.generateMaze = function(scene) {
     
     var visited = [];
+
+    if(this.curLevel > 2) {
+      wallMap = THREE.ImageUtils.loadTexture( "js/assets/level/darkBricks.png" );
+    }
 
     for(var i = 0; i < this.numCells; i++) {
       this.cells[i] = [];
@@ -207,11 +246,10 @@ define(['three'], function(THREE) {
 
 
   Level.prototype.addWallsToScene = function(scene) {
+    var wallSize = this.wallSize;
     var mergedGeo = new THREE.Geometry();
-    var wallSize = 200;
     var offset = wallSize*this.cells.length/2;
     this.offset = offset;
-    this.wallSize = wallSize;
     for(var i = 0; i < this.cells.length; i++) {
         this.walls.push(this.newWall(2*i*wallSize - offset, -wallSize - offset, 0));
         this.walls.push(this.newWall(((2*i+1)*wallSize) - offset, -wallSize - offset, 0));

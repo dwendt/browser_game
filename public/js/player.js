@@ -21,7 +21,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     Actor.call(this); // Call the parent constructor
     this.name="player";
     numPlayers++;
-    this.attackDelay = 20;
+    this.attackDelay = 30;
     this.damage = 100;
     this.initX = x || 0;
     this.initY = y || 0;
@@ -64,12 +64,11 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
       this.direction.y = -1;
       this.position.y -= (5 * (60/this.fps));
     }
-    if(keyboard.pressed('space') && this.attackCooldown == 0) {
+    if(keyboard.pressed('space') && this.attackCooldown <= 0) {
       this.attack(this.scene);
     }
 
     // Update timing variables
-    this.attackCooldown -= (this.attackCooldown > 0 ? 1 : 0);
 
     //console.log(this.canMove.leftDir);
   }
@@ -96,6 +95,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
     this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
     this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
+    this.deathSound = new Audio('js/assets/player/sounds/death.wav');
 
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );

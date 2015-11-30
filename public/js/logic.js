@@ -4,8 +4,6 @@
 
 define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap"], function(THREE, Level, Player, Skeleton, THREEx, $) {
 
-  console.log('HEY IM HERE');
-
   $('#submissionForm').on('submit', function(e) {
     e.preventDefault();
     var name = $("#usernameinput").val();
@@ -37,7 +35,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
     // Variables used for game state
     this.inMenu = true;
-    this.curLevel = 0;              // Should determine difficulty, stage contents, loot...
+    this.curLevel = 5;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.score = 0;
     this.pausedHealth = 100;
@@ -47,8 +45,8 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     this.levelHist = new Array();   // Past levels, for going back?
     this.initLevel();
     
-    this.currentZoom = 4000;
-    this.zl = 3;
+    this.currentZoom = 8000;
+    this.zl = 12;
 
     this.clock = new THREE.Clock(true);
 
@@ -61,13 +59,13 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
   GameLogic.prototype = {
     // Creates a new level, positions the player.
     initLevel: function() {
-      this.level = new Level();
+      this.level = new Level(this.curLevel);
 
       // Custom async controller because reasons
       var monsterInterval = setInterval(function(level, f, th){
         if(th.level.finishedLoading) {
-          th.createMonsters();
           th.initPlayer();
+          th.createMonsters();
           clearInterval(monsterInterval);
         }
       }, 50, this.level, this.createMonsters, this);
@@ -80,12 +78,13 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
     },
     nextLevel: function() {
+      this.curLevel++;
       console.log('going to next level');
       this.storeLevel();
       this.pausedHealth = this.player.health;
       this.level.destroyLevel();
       this.player.destroyPlayer();
-      this.initLevel();
+      this.initLevel(this.curLevel);
     },
 
     // Called when a new frame is rendered, should make renderables update geometry/color/etc.
@@ -94,7 +93,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
       if(this.keyboard.pressed('z')) {
         this.zl++;
-        this.currentZoom = this.level.zoomLevels[this.zl % this.level.zoomLevels.length];
+        this.currentZoom = this.level.zoomLevels[(Math.floor(this.zl/3)) % this.level.zoomLevels.length];
       }
 
       if (this.player) {
@@ -104,6 +103,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         $('#playerHealth').text(this.player.health + " / " + 100);
         if(this.player.removal) {
           // Gameover code goes here
+          this.player.deathSound.play();
           this.player.destroyPlayer();
           this.player = undefined;
           this.gameOver();
@@ -123,6 +123,9 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
         // remove from scene if necessary
         if(this.actors[i].removal) {
+          if(this.actors[i].deathSound) {
+            this.actors[i].deathSound.play();
+          }
           this.actors[i] = null;
           this.actors.splice(i--,1);
           if(this.player.health > 0) {
@@ -133,7 +136,9 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           $('#modalScore').val(this.score);
           $('#monsterText').text(this.actors.length + " Monsters remain.");
           if(this.actors.length == 0 && this.player.health > 0) { // Only the player is left
-            this.nextLevel();
+            setTimeout(function(th) {
+              th.nextLevel();
+            }, 1000, this);
           }
         }
 
@@ -173,6 +178,8 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           newY = Math.floor(Math.random()*this.level.numCells);
         }
         this.actors.push(new Skeleton((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset));
+        this.actors[this.actors.length-1].player = this.player;
+        this.actors[this.actors.length-1].health *= this.curLevel;
       }
     },
 
