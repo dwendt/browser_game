@@ -17,7 +17,7 @@ define(['three'],function(THREE) {
 
   // Creates the canvas/initializes rendering.
   function Renderer() {
-    var canvWid = window.innerWidth * .8;
+    var canvWid = window.innerWidth;
     var canvHei = window.innerHeight;
     var aspectRatio = canvWid/canvHei;
     console.log("canv wid, hei, ratio: ", canvWid, canvHei, aspectRatio);
@@ -82,7 +82,7 @@ define(['three'],function(THREE) {
     container.appendChild(canvRenderer.domElement);
 
     window.addEventListener( 'resize', function() {
-      var width = window.innerWidth * .8;
+      var width = window.innerWidth;
       camera.aspect = width / window.innerHeight;
       camera.left = width / -2;
       camera.right = width / 2;

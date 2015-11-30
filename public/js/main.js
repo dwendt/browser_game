@@ -9,6 +9,7 @@ require.config({
     projector: 'vendor/examples/renderers/Projector',
     keyboard: 'vendor/threex.keyboardstate',
     textureAnimator: 'vendor/ThreeTextureAnimator',
+    bootstrap :  "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min"
   },
   shim: {
     three: {
@@ -26,7 +27,8 @@ require.config({
     textureAnimator: {
       deps: ['three'],
       exports: 'TextureAnimator'
-    }
+    },
+    bootstrap : { "deps" :['jquery'] }
   }
 });
 
