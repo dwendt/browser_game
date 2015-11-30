@@ -39,29 +39,30 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   }
 
   Player.prototype.move = function() {
+
     // console.log(this.canMove);
     if(keyboard.pressed('up') && this.canMove.up) {
       this.direction.y = 1;
-      this.position.y += 5;
+      this.position.y += (5 * (60/this.fps));
     }
     if(keyboard.pressed('left') && this.canMove.leftDir) {
       // if(this.direction.x == 1) {
         this.sprite.material.map = warriorLeftMap;
       // }
       this.direction.x = -1;
-      this.position.x -= 5;
+      this.position.x -= (5 * (60/this.fps));
     }
     if(keyboard.pressed('right') && this.canMove.rightDir) {
       // if(this.direction.x == -1) {
         this.sprite.material.map = warriorRightMap;
       // }
       this.direction.x = 1;
-      this.position.x += 5;
+      this.position.x += (5 * (60/this.fps));
       
     }
     if(keyboard.pressed('down') && this.canMove.down) {
       this.direction.y = -1;
-      this.position.y -= 5;
+      this.position.y -= (5 * (60/this.fps));
     }
     if(keyboard.pressed('space') && this.attackCooldown == 0) {
       this.attack(this.scene);

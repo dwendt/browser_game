@@ -2,7 +2,7 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(THREE, Level, Player, Skeleton, $, THREEx) {
+define(["three", "level", "player", "skeleton", "bootstrap", "jquery", "keyboard"], function(THREE, Level, Player, Skeleton, bootstrap, $, THREEx) {
 
   // Constructor for this.
   function GameLogic(renderer) {
@@ -27,6 +27,8 @@ define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(
     
     this.currentZoom = 4000;
     this.zl = 3;
+
+    this.clock = new THREE.Clock(true);
 
     this.keyboard = new THREEx.KeyboardState();
 
@@ -66,6 +68,7 @@ define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(
 
     // Called when a new frame is rendered, should make renderables update geometry/color/etc.
     rendUpdate: function(scene) {
+      var fps = Math.round(1 / this.clock.getDelta());
 
       if(this.keyboard.pressed('z')) {
         this.zl++;
@@ -73,11 +76,15 @@ define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(
       }
 
       if (this.player) {
+        this.player.fps = fps;
         this.player.rendUpdate(scene);
         this.renderer.setCameraPos(this.player.position.x, this.player.position.y, this.currentZoom);
         $('#playerHealth').text(this.player.health + " / " + 100);
         if(this.player.removal) {
           // Gameover code goes here
+          this.player.destroyPlayer();
+          this.player = undefined;
+          this.gameOver();
         }
       }
 
@@ -88,7 +95,7 @@ define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(
       // Update entity renderstuff.
       for (var i = 0; i < this.actors.length; i++) {
         if(this.actors[i]) {
-
+          this.actors[i].fps = fps;
           this.actors[i].rendUpdate(scene);
         }
 
@@ -113,6 +120,7 @@ define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(
 
     createMonsters: function() {
       this.initSkeletons();
+      $('#monsterText').text(this.actors.length + " Monsters remain.");
     },
 
     initPlayer: function() {
@@ -142,6 +150,11 @@ define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(
         }
         this.actors.push(new Skeleton((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset));
       }
+    },
+
+    gameOver: function() {
+      console.log('game over');
+      $('#modal-button').click();
     }
 
     

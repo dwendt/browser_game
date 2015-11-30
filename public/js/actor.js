@@ -66,6 +66,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
 
   // Updates geometry related to this.
   Actor.prototype.rendUpdate = function(scene) {
+
     if (undefined === scene) {
       console.log("rendUpdate being called from Actor subclass without passing scene!");
     }

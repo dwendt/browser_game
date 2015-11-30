@@ -56,10 +56,10 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
 
     // if(!this.canMove.rightDir || !this.canMove.leftDir || !this.canMove.up || !this.canMove.down) console.log(this.canMove);
 
-    if(this.canMove.rightDir && this.direction.x > 0)  this.position.setX(this.position.x + this.direction.x * 3);
-    if(this.canMove.leftDir && this.direction.x < 0)  this.position.setX(this.position.x + this.direction.x * 3);
-    if(this.canMove.up && this.direction.y > 0)  this.position.setY(this.position.y + this.direction.y * 3);
-    if(this.canMove.down && this.direction.y < 0)  this.position.setY(this.position.y + this.direction.y * 3);
+    if(this.canMove.rightDir && this.direction.x > 0)  this.position.setX((this.position.x + (this.direction.x * 3 * (60/this.fps)) ));
+    if(this.canMove.leftDir && this.direction.x < 0)  this.position.setX((this.position.x + (this.direction.x * 3 * (60/this.fps)) ));
+    if(this.canMove.up && this.direction.y > 0)  this.position.setY((this.position.y + (this.direction.y * 3 * (60/this.fps)) ));
+    if(this.canMove.down && this.direction.y < 0)  this.position.setY((this.position.y + (this.direction.y * 3 * (60/this.fps)) ));
 
   };
 
