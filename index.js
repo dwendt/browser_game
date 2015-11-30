@@ -6,6 +6,7 @@ var app = express();
 var http = require('http').Server(app);
 //io
 var io = require('socket.io')(http);
+var _ = require('lodash');
 
 var bodyParser = require('body-parser');
 
@@ -41,7 +42,8 @@ app.get('/score', function(req, res) {
     for(var i = 0; i < reply.length; i++) {
       retObj.push(JSON.parse(reply[i]));
     }
-    res.status(200).json(reply).end();
+    retObj = _.chain(retObj).sortBy('userscore').reverse();
+    res.status(200).json(retObj).end();
   });
 });
 

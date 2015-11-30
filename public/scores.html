@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <title>High Scores</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/scores.css"/>
+    </script>
+  </head>
+  <body style="background-image: url('js/assets/hsbg.png')">
+    
+
+
+    <div id="log" class="col-md-3 col-md-offset-9" style="background-image: url('js/assets/scorekeep.png');
+    background-size: 100% 100%;
+    padding: 35px 35px 35px 35px;
+    font-family: 'Press Start 2P';
+    color: yellow;
+    overflow: scroll;
+    height: 50%;">
+    </div>
+
+
+
+
+
+    <script type="text/javascript">
+      $(function(){
+        $.ajax({
+          method: "GET",
+          url: "/score",
+          dataType: "json"
+          }).done(function(msg) {
+            console.log(msg);
+            for(var i = 0; i < msg.length; i++) {
+              $("#log").append((i+1)+". "+ msg[i].userscore+" - "+msg[i].username+"<br>");
+            }
+          });
+      })
+    </script>
+  </body>
+  
+</html>
