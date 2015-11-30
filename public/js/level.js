@@ -22,7 +22,9 @@ define(['three'], function(THREE) {
     this.cells = [];
     this.walls = [];
     this.walls2 = new Array();
-    this.numCells = 10;
+    this.numCells = Math.floor(Math.random()*10 + 5);
+    this.zoomLevels = [2000, 4000, 8000, 16000];
+    console.log(this.zoomLevels);
   };
 
   // Instanced destructor...
@@ -30,8 +32,16 @@ define(['three'], function(THREE) {
     // ....non-scene related removal stuff here? 
   };
 
+  Level.prototype.destroyLevel = function() {
+    for(var i = this.walls2.length - 1; i >= 0; i--) {
+      this.scene.remove(this.walls2[i]);
+      this.walls2.splice(i,1);
+    }
+  }
+
   // For when it's first being added to a scene.
   Level.prototype.rendInit = function(scene) {
+    this.scene = scene;
     console.log("creating backing...");
     var newBack = new THREE.Mesh( backGeo, backMat );
     newBack.position.x = 0;
@@ -273,7 +283,8 @@ define(['three'], function(THREE) {
     for(var i = 0; i < this.walls2.length; i++) {
       this.walls2[i].updateMatrix();
       scene.add(this.walls2[i]);
-      //mergedGeo.merge(this.walls2[i].geometry, this.walls2.matrix, 0);
+      // THREE.GeometryUtils.merge(mergedGeo, this.walls2[i].geometry);
+      // mergedGeo.merge(this.walls2[i].geometry, this.walls2[i].matrix);
     }
 
     // var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});

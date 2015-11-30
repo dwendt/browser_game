@@ -2,7 +2,7 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level, Player, Skeleton, $) {
+define(["three", "level", "player", "skeleton", "jquery", "keyboard"], function(THREE, Level, Player, Skeleton, $, THREEx) {
 
   // Constructor for this.
   function GameLogic(renderer) {
@@ -18,11 +18,17 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
     this.curLevel = 0;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.score = 0;
+    this.pausedHealth = 10;
 
     // TODO: since we have no menu, just init a new level.
     this.level = null;
     this.levelHist = new Array();   // Past levels, for going back?
     this.initLevel();
+    
+    this.currentZoom = 4000;
+    this.zl = 3;
+
+    this.keyboard = new THREEx.KeyboardState();
 
     return this;
   };
@@ -50,10 +56,21 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
 
     },
     nextLevel: function() {
+      console.log('going to next level');
       this.storeLevel();
+      this.pausedHealth = this.player.health;
+      this.level.destroyLevel();
+      this.player.destroyPlayer();
+      this.initLevel();
     },
+
     // Called when a new frame is rendered, should make renderables update geometry/color/etc.
     rendUpdate: function(scene) {
+
+      if(this.keyboard.pressed('z')) {
+        this.zl++;
+        this.currentZoom = this.level.zoomLevels[this.zl % this.level.zoomLevels.length];
+      }
 
       if (this.player) {
         this.player.rendUpdate(scene);
@@ -79,16 +96,19 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
         if(this.actors[i].removal) {
           this.actors[i] = null;
           this.actors.splice(i--,1);
-          this.score += 10;
+          if(this.player.health > 0) {
+            this.score += 10;
+          }
           $('#playerScore').text("Score: " + this.score);
           $('#monsterText').text(this.actors.length + " Monsters remain.");
+          if(this.actors.length == 0 && this.player.health > 0) { // Only the player is left
+            this.nextLevel();
+          }
         }
 
       }
 
-      if(this.actors.length == 1) { // Only the player is left
-        this.nextLevel();
-      }
+      
     },
 
     createMonsters: function() {
@@ -106,6 +126,7 @@ define(["three", "level", "player", "skeleton", "jquery"], function(THREE, Level
       }
       this.player = new Player((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset);
       this.renderer.setCameraLookAt(this.player.position);
+      this.player.health = this.pausedHealth;
     },
 
     initSkeletons: function() {

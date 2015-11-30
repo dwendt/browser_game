@@ -89,8 +89,8 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     this.animator = new TextureAnimator(skeletonRightMap, 9, 1, 9, 75);
     this.animRate = 1000;
     this.animator2 = new TextureAnimator(skeletonLeftMap, 9, 1, 9, 75);
-    console.log(this.animator);
-    console.log(this.animator2);
+    // console.log(this.animator);
+    // console.log(this.animator2);
 
     
     this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');

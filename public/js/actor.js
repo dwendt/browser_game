@@ -24,7 +24,7 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     // Raycaster and  Ray in each direction for collision detection
     this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(1, -1, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, -1, 0),new THREE.Vector3(-1, 0, 0),new THREE.Vector3(-1, 1, 0)];
     // this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, 0, 0)];
-    this.caster = new THREE.Raycaster(this.position, this.rays[0]);
+    this.caster = new THREE.Raycaster(this.position, this.rays[0], 0, this.radius*2);
     this.direction = {};
     this.canMove = {'up':true, 'rightDir': true, 'down': true, 'leftDir': true};
     this.attackCooldown = 0;
@@ -183,9 +183,6 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
         if (collisions[j].object.name === 'wall') break;
         if (collisions[j].distance <= distance && this.validObject(collisions[j].object)) {
           //console.log(this.name, collisions[j].object.obj.name, collisions[j].distance);
-
-          console.log(this);
-          console.log(collisions[j].object);
           if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
             // do something on collision.
             collisions[j].object.obj.health -= this.damage;
