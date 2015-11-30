@@ -37,7 +37,10 @@ app.post('/score', function(req, res){
 
 app.get('/score', function(req, res) {
   client.lrange('scores', 0, -1, function(err, reply) {
-    console.log(reply);
+    var retObj = [];
+    for(var i = 0; i < reply.length; i++) {
+      retObj.push(JSON.parse(reply[i]));
+    }
     res.status(200).json(reply).end();
   });
 });

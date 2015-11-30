@@ -2,42 +2,48 @@
   <head>
     <title>2D Top-Down Browser Game</title>
     <link rel="stylesheet" href="css/main.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
     <!-- First script checks for webgl... 
     <script src="js/vendor/threejs_extend/Detector.js"></script>
     -->
+
     <!-- Second loads requirejs which calls main.js after it's loaded -->
     <script data-main="js/main" src="js/require.js"></script>
   </head>
+  
   <body>
     <div id="canvas">
       <div style="position:absolute; left: 0%; color: white; bottom: 0%;" id="playerScore">Score: 0</div>
       <div style="position:absolute; right: 0%; color: white;" id="playerHealth">100 / 100</div>
       <div style="position:absolute; left: 40%; color: white;" id="monsterText">Loading...</div>
     </div>
-
   </body>
 
-  <!-- Modal
-  <div id="myModal" class="modal fade" role="dialog" style="display:none">
+  <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
+          <h4 class="modal-title">Game Over</h4>
         </div>
         <div class="modal-body">
-          <p>Some text in the modal.</p>
+          <form id="submissionForm">
+            <p>Input your name and submit your high score!</p>
+            <p>Score: <input type="text" id="modalScore" value="0" readonly></input></p>
+            <p>Name: <input id="usernameinput" type="text"></input></p>
+            <button type="submit">Submit</button>
+          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
-
     </div>
   </div>
 
   <button type="button" id="modal-button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="display:none">Open Modal</button>
-
-  -->
+  
 </html>
