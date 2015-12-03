@@ -65,7 +65,6 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
         // else {
         //   this.sprite.material.map = wizardLeftMap;
         // }
-      console.log(this.direction.x,this.sprite.scale.x);
         if(this.direction.x > 0 && this.sprite.scale.x > 0) this.sprite.scale.x *= -1;
       // }
       this.direction.x = -1;
