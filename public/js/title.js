@@ -203,7 +203,7 @@ define(['jquery','assets','player'], function($, Assets, Player) {
 
   // They're done, go.
   Title.prototype.onFinalized = function(finalizecb) {
-    this.player.destroyPlayer();
+    this.ply.destroyPlayer();
     finalizecb(this.choice);
   };
 
