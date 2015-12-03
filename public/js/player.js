@@ -33,7 +33,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.initY = y || 0;
     this.position.x = x;
     this.position.y = y;
-    this.distance = 5;
+    this.distance = 8;
     this.startHealth = 100;
     //console.log('Player INITX AND Y',this.initX,this.initY);
     this.class = c;
