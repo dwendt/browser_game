@@ -2,18 +2,18 @@
  *  Level object. TODO: decide how we want to make levels infinite/random
  */
 
-define(['three'], function(THREE) {
+define(['three', 'assets'], function(THREE, Assets) {
 
   // Private static.
-  // Grass texture for the default backing. TODO: loading screen instead?
-  var grassMap = THREE.ImageUtils.loadTexture( "assets/level/grass.png" );
+  // Grass texture for the default backing. 
+  var grassMap = Assets.grassMap;
   grassMap.wrapS = grassMap.wrapT = THREE.RepeatWrapping;
   grassMap.repeat.set( 40, 40 ); // Larger values mean tinier texture.
 
   // Properties for the backing.
   var backGeo = new THREE.PlaneGeometry(30000, 30000, 0); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
-  var wallMap = THREE.ImageUtils.loadTexture( "assets/level/wall.jpg" );
+  var wallMap = Assets.wallMap;
 
   // Constructor.
   function Level(curLevel, onLoadCB) {
@@ -84,9 +84,9 @@ define(['three'], function(THREE) {
     
     var innerBackGeo = new THREE.PlaneGeometry( 2 * this.numCells * this.wallSize, 2 * this.numCells * this.wallSize, 1);
     
-    var innerBackMap = THREE.ImageUtils.loadTexture( "assets/level/darkWood.jpg" );
+    var innerBackMap = Assets.innerBackMap;
     if(this.curLevel <= 3) {
-      innerBackMap = THREE.ImageUtils.loadTexture( "assets/level/woodFloor.jpg");
+      innerBackMap = Assets.woodFloor;
     }
 
     innerBackMap.wrapS = innerBackMap.wrapT = THREE.RepeatWrapping;
@@ -125,7 +125,7 @@ define(['three'], function(THREE) {
     var visited = [];
 
     if(this.curLevel > 2) {
-      wallMap = THREE.ImageUtils.loadTexture( "assets/level/darkBricks.png" );
+      wallMap = Assets.darkBricks;
     }
 
     for(var i = 0; i < this.numCells; i++) {

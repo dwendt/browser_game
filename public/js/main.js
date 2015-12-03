@@ -34,8 +34,10 @@ require.config({
   }
 });
 
-requirejs(['renderer', 'logic'], function(Renderer, GameLogic){
+requirejs(['assets', 'renderer', 'logic'], function(Assets, Renderer, GameLogic){
   console.log("Initializing renderer...");
+
+  var load_assets = new Assets();
 
   // This will initialize our renderer with the body contents.
   var core_renderer = new Renderer();

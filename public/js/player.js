@@ -2,24 +2,20 @@
  *  Player object. Should probably be inheriting a collidable/generic entity object. TODO.
  */
 
-define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx, TextureAnimator, Actor) {
+define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THREE, THREEx, TextureAnimator, Actor, Assets) {
 
   // Private static.
   var numPlayers = 0;
 
   // We should probably define typical player THREEJS geometry/colors/etc as private statics here, and jjust copy the right ones in rendinit based on the kind of player.
 
-  var warriorRightMap = THREE.ImageUtils.loadTexture( "assets/player/warriorRight.png" );
-  var warriorLeftMap = THREE.ImageUtils.loadTexture( "assets/player/warriorLeft.png" );
+  var warriorRightMap = Assets.warriorRightMap;
+  var warriorLeftMap = Assets.warriorLeftMap;
   warriorRightMap.magFilter = THREE.NearestFilter;
   warriorLeftMap.magFilter = THREE.NearestFilter;
   var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
 
-  var attackSound = new Audio('assets/player/sounds/swordSwing.wav');
-  var hitSound = new Audio('assets/player/sounds/swordStrike.wav');
-  var hurtSound = new Audio('assets/player/sounds/hurt.wav');
-  var deathSound = new Audio('assets/player/sounds/death.wav');
 
   // Constructor. Inherits Actor.
   function Player(x, y) {
@@ -33,6 +29,11 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
     this.position.x = x;
     this.position.y = y;
     //console.log('Player INITX AND Y',this.initX,this.initY);
+
+    this.attackSound = Assets.plyAttack;
+    this.hitSound = Assets.plyHit;
+    this.hurtSound = Assets.plyHurt;
+    this.deathSound = Assets.plyDeath;
   };
 
   Player.prototype = Object.create(Actor.prototype); // is-a actor inheritance.

@@ -9,7 +9,6 @@ define([], function() {
     // Create a backing plane
 
     // Create the buttons/text/font
-
   };
 
   // Roll it all back to home.

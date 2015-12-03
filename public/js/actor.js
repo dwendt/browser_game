@@ -2,7 +2,7 @@
  *  Actor object. Holds generic methods for players/enemies/etc.
  */
 
-define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, TextureAnimator) {
+define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREEx, TextureAnimator, Assets) {
 
   // Private static vars.
   var numActors = 0; // Count of actors in total.

@@ -2,22 +2,17 @@
  *  Skeleton object. Should probably be inheriting a collidable/generic entity object. TODO.
  */
 
-define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx, TextureAnimator, Enemy) {
+define(['three', 'keyboard', 'textureAnimator', 'enemy', 'assets'], function(THREE, THREEx, TextureAnimator, Enemy, Assets) {
 
   // Private static.
   var numSkeletons = 0;
 
-  var skeletonRightMap = THREE.ImageUtils.loadTexture( "assets/skeleton/right.png" );
+  var skeletonRightMap = Assets.skeletonRightMap;
   skeletonRightMap.magFilter = THREE.NearestFilter;
-  var skeletonLeftMap = THREE.ImageUtils.loadTexture( "assets/skeleton/left.png" );
+  var skeletonLeftMap = Assets.skeletonLeftMap;
   skeletonLeftMap.magFilter = THREE.NearestFilter;
 
   var skeletonSpriteMat = new THREE.SpriteMaterial( { map: skeletonRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
-
-  var attackSound = new Audio('assets/skeleton/sounds/attackSound.wav');
-  var hitSound = new Audio('assets/skeleton/sounds/hitSound.wav');
-  // this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
-  var deathSound = new Audio('assets/skeleton/sounds/deathSound.wav');
 
   // Constructor.
   function Skeleton(x, y) {
@@ -27,6 +22,11 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     this.initX = x || 0;
     this.initY = y || 0;
     this.attackDelay = Math.floor(Math.random() * 100) + 50;
+
+    this.attackSound = Assets.skeleAttack;
+    this.hitSound = Assets.skeleHit;
+    // this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
+    this.deathSound = Assets.skeleDeath;
   };
 
   Skeleton.prototype = Object.create(Enemy.prototype); // is-a Enemy inheritance.
