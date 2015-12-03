@@ -157,7 +157,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           }
           if(Math.random() > .95) {
             this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Increased!'}, {color: '6f57fa'});
-            this.player.attack *= 2;
+            this.player.damage *= 2;
           }
           this.actors[i] = null;
           this.actors.splice(i--,1);
