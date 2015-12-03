@@ -115,6 +115,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
       this.distance = 10;
       this.startHealth = 30;
       this.health = 30;
+      this.damage /= 2;
     }
 
     sprite.position.set(this.initX,this.initY,this.parallax);

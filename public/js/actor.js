@@ -29,6 +29,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
     this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(1, -1, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, -1, 0),new THREE.Vector3(-1, 0, 0),new THREE.Vector3(-1, 1, 0)];
     // this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, 0, 0)];
     this.caster = new THREE.Raycaster(this.position, this.rays[0], 0, this.radius*2);
+    this.attackCaster = new THREE.Raycaster(this.position, this.rays[0], 0, this.attackRadius*2);
     this.direction = {x:1};
     this.canMove = {'up':true, 'rightDir': true, 'down': true, 'leftDir': true};
     this.attackCooldown = 0;
@@ -197,7 +198,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
       // We reset the raycaster to this direction
       this.caster.set(this.position, this.rays[i]);
       // Test if we intersect with any obstacle mesh
-      collisions = this.caster.intersectObjects(obstacles);
+      collisions = this.attackCaster.intersectObjects(obstacles);
       // And disable that direction if we do
 
       for (var j = 0; j < collisions.length; j++) {
@@ -227,7 +228,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
             collObj.position.x -= 20;
             if(collObj.hurtSound) {
               collObj.hurtSound.play();
-            }            
+            } 
             objHit=true;
             break;
           }
@@ -328,13 +329,13 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
     this.flashColor(0xFF0000, 500);
   }
 
-  Actor.prototype.flashColor = function(color, dur) {
+  Actor.prototype.flashColor = function(hexcolor, dur) {
     var self=this;
     var length = 2.0;
     var flashrate = 10;
     this.flashAccum = 0; // how long we've flashed.
 
-    color = new THREE.Color(color);
+    var color = new THREE.Color(hexcolor);
     var origColor = this.sprite.material.color.clone();
 
     // the idx our func will go into
@@ -342,16 +343,12 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
 
     this.timedEffects.push(function(delta) {
       self.flashAccum += delta;
-      console.log(self.flashAccum + " vs " + length);
 
       var multiple = (Math.sin(self.flashAccum*flashrate)+1)/2;
       var multinv = 1-multiple;
 
-      // fade between 0xffffff and color
-      self.sprite.material.color.setRGB(
-        (multinv)*0.8+multiple*color.r, 
-        (multinv)*0.8+multiple*color.g, 
-        (multinv)*0.8+multiple*color.b);
+      // lerp / inerpolate the orig color
+      self.sprite.material.color.copy(origColor).lerp(color, multiple);
 
       if (self.flashAccum > length) {
         self.timedEffects = self.timedEffects.splice(popIdx, 1);
