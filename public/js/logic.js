@@ -155,7 +155,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           if(this.actors[i].deathSound) {
             this.actors[i].deathSound.play();
           }
-          if(Math.random() > .05) {
+          if(Math.random() > .95) {
             this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Increased!'}, {color: '6f57fa'});
           }
           this.actors[i] = null;
