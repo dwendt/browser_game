@@ -34,6 +34,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.position.x = x;
     this.position.y = y;
     this.distance = 5;
+    this.startHealth = 100;
     //console.log('Player INITX AND Y',this.initX,this.initY);
     this.class = c;
     this.attackSound = Assets.plyAttack;
@@ -111,6 +112,8 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
       this.animator = new TextureAnimator(wizardRightMap, 4, 1, 4, 75);
       this.animRate = 1000;
       this.distance = 10;
+      this.startHealth = 30;
+      this.health = 30;
     }
 
     sprite.position.set(this.initX,this.initY,this.parallax);
