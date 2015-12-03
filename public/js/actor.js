@@ -19,6 +19,8 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
     this.damage = 10;
     this.removal = false;
 
+    this.timedEffects = [];
+
     this.fps = 60;
 
     this.scale = this.radius*2;
@@ -27,7 +29,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
     this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(1, -1, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, -1, 0),new THREE.Vector3(-1, 0, 0),new THREE.Vector3(-1, 1, 0)];
     // this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, 0, 0)];
     this.caster = new THREE.Raycaster(this.position, this.rays[0], 0, this.radius*2);
-    this.direction = {};
+    this.direction = {x:1};
     this.canMove = {'up':true, 'rightDir': true, 'down': true, 'leftDir': true};
     this.attackCooldown = 0;
     // Classes must override this.attackDelay with ms delay >= 100
@@ -85,6 +87,11 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
     if (this.animator2) {
       var delta = this.clock.getDelta();
       this.animator2.update(delta*this.animRate);
+    }
+
+    // Call all the timed effects.
+    for (idx in this.timedEffects) {
+      this.timedEffects[idx](delta);
     }
 
 
@@ -202,6 +209,8 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
 
           if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
             // do something on collision.
+            if(!!collObj.takeDamage) 
+              collObj.takeDamage(this.damage);
             collObj.health -= this.damage;
             collObj.position.x += 20;
             if(collObj.hurtSound) {
@@ -211,6 +220,8 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
             break;
           } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
             // do something on collision.
+            if(!!collObj.takeDamage) 
+              collObj.takeDamage(this.damage);
 
             collObj.health -= this.damage;
             collObj.position.x -= 20;
@@ -222,6 +233,8 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
           }
           if ((i === 0 || i === 1 || i === 7) && this.direction.y === 1) {
             // do something on collision.
+            if(!!collObj.takeDamage) 
+              collObj.takeDamage(this.damage);
 
             collObj.health -= this.damage;
             collObj.position.y += 20;
@@ -232,10 +245,12 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
             break;
           } else if ((i === 3 || i === 4 || i === 5) && this.direction.y === -1) {
             // do something on collision.
+            if(!!collObj.takeDamage) 
+              collObj.takeDamage(this.damage);
 
             collObj.health -= this.damage;
             collObj.position.y -= 20;
-            if(collObj.hurtSound) {
+            if(!!collObj.hurtSound) {
               collObj.hurtSound.play();
             }
             objHit=true;
@@ -310,7 +325,44 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
 
   // actor-specific damage code, overrideme.
   Actor.prototype.takeDamage = function(amount) {
+    this.flashColor(0xFF0000, 500);
   }
+
+  Actor.prototype.flashColor = function(color, dur) {
+    var self=this;
+    var length = 2.0;
+    var flashrate = 10;
+    this.flashAccum = 0; // how long we've flashed.
+
+    color = new THREE.Color(color);
+    var origColor = this.sprite.material.color.clone();
+
+    // the idx our func will go into
+    var popIdx = this.timedEffects.length;
+
+    this.timedEffects.push(function(delta) {
+      self.flashAccum += delta;
+      console.log(self.flashAccum + " vs " + length);
+
+      var multiple = (Math.sin(self.flashAccum*flashrate)+1)/2;
+      var multinv = 1-multiple;
+
+      // fade between 0xffffff and color
+      self.sprite.material.color.setRGB(
+        (multinv)*0.8+multiple*color.r, 
+        (multinv)*0.8+multiple*color.g, 
+        (multinv)*0.8+multiple*color.b);
+
+      if (self.flashAccum > length) {
+        self.timedEffects = self.timedEffects.splice(popIdx, 1);
+        if (self.timedEffects.length == 1) {
+          self.timedEffects = [];
+        }
+        self.sprite.material.color.set(origColor);
+      }
+    });
+
+  };
 
   return Actor;
 });

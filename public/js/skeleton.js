@@ -76,7 +76,8 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy', 'assets'], function(THR
   // For when it's first being added to a scene.
   Skeleton.prototype.rendInit = function(scene) {
     // http://threejs.org/docs/#Reference/Objects/Sprite
-    var sprite = new THREE.Sprite( skeletonSpriteMat );
+    var curSpriteMat = new THREE.SpriteMaterial( { map: skeletonRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+    var sprite = new THREE.Sprite( curSpriteMat );
     console.log("initting skele");
     sprite.scale.set(this.scale,this.scale,1);
     sprite.name = "skeletonSprite"; //TODO: random GUID? store them. also.
