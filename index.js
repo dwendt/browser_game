@@ -66,7 +66,7 @@ app.get(/^(.+)$/, function(req, res) {
 // Chatroom
 
 // usernames which are currently connected to the chat
-var usernames = {};
+var usernames = [];
 var numUsers = 0;
 
 
@@ -93,7 +93,7 @@ io.on('connection', function (socket) {
     log.info("recv'd user add",username);
     
     // everyone must be unique!
-    if (username in usernames) {
+    if (usernames.indexOf(username) !== 1) {
       username = username + "+"
     }
 
