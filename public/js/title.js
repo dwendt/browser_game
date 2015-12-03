@@ -42,7 +42,7 @@ define(['jquery','assets','player'], function($, Assets, Player) {
         "</div>"+
         "<div data-clsid='2' class='classbadge'>"+
           "<img class='classimg' src='assets/player/wizardFront.png' />"+
-          "<div class='classdesc'>Wizards use <i>magic</i>. <b><u>MAGIC!</u></b> That means we don't need to explain how he works. Experienced players only.</div>"+
+          "<div class='classdesc'>Wizards use <i>magic</i>. <b><u>MAGIC!</u></b> That means we don't need to explain how she works.</div>"+
         "</div>"+
       "</div>"+
       "<div style='display:none;' class='finalizebtn'>-= START GAME =-</div>"+

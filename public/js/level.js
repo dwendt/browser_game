@@ -60,6 +60,8 @@ define(['three', 'assets'], function(THREE, Assets) {
       this.scene.remove(this.walls2[i]);
       this.walls2.splice(i,1);
     }
+
+    this.scene.remove(this.mesh);
   }
 
   // For when it's first being added to a scene.
@@ -354,6 +356,7 @@ define(['three', 'assets'], function(THREE, Assets) {
     var mesh = new THREE.Mesh(buffGeo, boxMaterial);
 
     mesh.name = 'wall';
+    this.mesh = mesh;
     scene.add(mesh);
     this.finishedLoading = true;
     this.onLoadCallback();

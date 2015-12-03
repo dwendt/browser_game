@@ -33,6 +33,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.initY = y || 0;
     this.position.x = x;
     this.position.y = y;
+    this.distance = 5;
     //console.log('Player INITX AND Y',this.initX,this.initY);
     this.class = c;
     this.attackSound = Assets.plyAttack;
@@ -53,7 +54,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     // console.log(this.canMove);
     if(keyboard.pressed('up') && this.canMove.up) {
       this.direction.y = 1;
-      this.position.y += (5 * (60/this.fps));
+      this.position.y += (this.distance * (60/this.fps));
     }
     if(keyboard.pressed('left') && this.canMove.leftDir) {
       // if(this.direction.x == 1) {
@@ -63,10 +64,10 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
         // else {
         //   this.sprite.material.map = wizardLeftMap;
         // }
-        if(this.direction.x > 0) this.sprite.scale.x *= -1;
+        if(this.direction.x > 0 && this.sprite.scale.x > 0) this.sprite.scale.x *= -1;
       // }
       this.direction.x = -1;
-      this.position.x -= (5 * (60/this.fps));
+      this.position.x -= (this.distance * (60/this.fps));
     }
     if(keyboard.pressed('right') && this.canMove.rightDir) {
       // if(this.direction.x == -1) {
@@ -77,14 +78,14 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
        //    this.sprite.material.map = wizardRightMap;
        //  }
       // }
-        if(this.direction.x < 0) this.sprite.scale.x *= -1;
+        if(this.direction.x < 0 && this.sprite.scale.x < 0) this.sprite.scale.x *= -1;
       this.direction.x = 1;
-      this.position.x += (5 * (60/this.fps));
+      this.position.x += (this.distance * (60/this.fps));
       
     }
     if(keyboard.pressed('down') && this.canMove.down) {
       this.direction.y = -1;
-      this.position.y -= (5 * (60/this.fps));
+      this.position.y -= (this.distance * (60/this.fps));
     }
     if(keyboard.pressed('space') && this.attackCooldown <= 0) {
       this.attack(this.scene);
@@ -109,6 +110,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
       this.clock = new THREE.Clock();
       this.animator = new TextureAnimator(wizardRightMap, 4, 1, 4, 75);
       this.animRate = 1000;
+      this.distance = 10;
     }
 
     sprite.position.set(this.initX,this.initY,this.parallax);
@@ -127,8 +129,6 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     scene.add(sprite);
     // this.showRaycastLines();
   };
-
-  
 
   // Updates geometry related to this.
   Player.prototype.rendUpdate = function(scene) {
