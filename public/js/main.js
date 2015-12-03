@@ -9,7 +9,7 @@ require.config({
     projector: 'vendor/examples/renderers/Projector',
     keyboard: 'vendor/threex.keyboardstate',
     textureAnimator: 'vendor/ThreeTextureAnimator',
-    bootstrap :  "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min",
+    bootstrap :  "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min",
     jquery: 'vendor/jquery',
     "socket.io-client": 'vendor/socket.io'
   },

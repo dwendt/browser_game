@@ -122,6 +122,7 @@ define(['jquery', 'socket.io-client'], function($, io) {
   Chat.prototype.AddUser = function(){
     console.log('adding user');
     userName = $('.user_inp').val();
+    this.username = userName;
     if(userName){
       //send server the username
       socket.emit('add user', userName);

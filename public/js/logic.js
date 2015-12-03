@@ -129,7 +129,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         this.player.fps = fps;
         this.player.rendUpdate(scene);
         this.renderer.setCameraPos(this.player.position.x, this.player.position.y, this.currentZoom);
-        $('#playerHealth').text(this.player.health + " / " + 100);
+        $('#playerHealth').text(this.player.health + " / " + this.player.startHealth);
         if(this.player.removal) {
           // Gameover code goes here
           this.player.deathSound.play();
@@ -206,12 +206,18 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     },
 
     gameOver: function() {
-      console.log('game over');
-      $('#modal-button').click();
+      $.ajax({
+        url : "/score",
+        type: "POST",
+        data: {username:this.chat.username, userscore:this.score},
+        success: function (data) {
+        },
+        error: function (jXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+        });
     }
-
-    
-  };
+  }
 
   // Static functions
   //GameLogic.someFunc = function() {....};
