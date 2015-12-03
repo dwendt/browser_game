@@ -10,7 +10,7 @@ define(['jquery','assets','player'], function($, Assets, Player) {
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
   grassMap.repeat.set( 140, 140 ); // Larger values mean tinier texture.
 
-  function Title() {
+  function Title(finalizecb) {
     var self = this; // preserve this for callbacks
 
     // title camera pos
@@ -25,11 +25,12 @@ define(['jquery','assets','player'], function($, Assets, Player) {
 
     // Create the buttons/text/font
     this.mainBody= $(""+
-    "<div class='startmenu'>"+
+    "<div class='startmenu mainmenu'>"+
       "<div class='menuhead wobble'>Go End Moe</div>"+
       "<br /><div class='subhead'>a 2d top down browser game<br />by dwn, chris pirillo, jordan ponce, gabriel babilonia</div>"+
       "<div class='startbtn'>START</div>"+
       "<div class='settingsbtn'>settings</div>"+
+      "<div class='backbtn'>{{ back }}</div>"+
     "</div>"+
     "");
 
@@ -39,27 +40,32 @@ define(['jquery','assets','player'], function($, Assets, Player) {
     "</div>");
 
     this.settingsBody = $(""+
-    "<div class='settingsmenu' style='display:none;'>"+
+    "<div class='settingsmenu startmenu' style='display:none;'>"+
       "<div class='qualpicker'>"+
         "<div class='settingChoice'>Quality</div><br />"+
         "<div class='qualselect'><span class='lowqual'>Low</span> <span class='highqual qualselected'>High</span></div>"+
       "</div>"+
+      "<div class='backbtn'>{{ back }}</div>"+
     "</div>");
 
     $(document.body).append(this.mainBody);
     $(document.body).append(this.classPickBody);
     $(document.body).append(this.settingsBody);
 
-    $(window).on("click", ".settingsbtn", function() {
+    $(document).on("click", ".settingsbtn", function() {
       self.onSettings();
     });
 
-    $(window).on("click", ".startbtn", function() {
+    $(document).on("click", ".startbtn", function() {
       self.onStart();
     });
 
-    $(window).on("click", ".finalizebtn", function() {
-      self.onFinalized();
+    $(document).on("click", ".finalizebtn", function() {
+      self.onFinalized(finalizecb);
+    });
+
+    $(document).on("click", ".backbtn", function() {
+      self.home();
     });
 
     // some effects
@@ -127,29 +133,29 @@ define(['jquery','assets','player'], function($, Assets, Player) {
     this.removeObjects = true;
 
     // Hide menus.
-    $('.startmenu').hide();
+    $('.startmenu.mainmenu').hide();
     $('.classpick').hide();
     $('.settingsmenu').hide();
   };
 
   // Roll it all back to home.
-  Title.prototype.home = function(level) {
-    $('.settingsmenu').hide();
+  Title.prototype.home = function() {
+    $(".settingsmenu").hide();
     $('.classpick').hide();
-    $('.startmenu').show();
+    $('.startmenu.mainmenu').show();
   };
 
   // yoyoyo
   Title.prototype.onSettings = function() {
     $('.classpick').hide();
-    $('.startmenu').hide();
+    $('.startmenu.mainmenu').hide();
     $('.settingsmenu').show();
 
   };
 
   // Go to class select
   Title.prototype.onStart = function() {
-    $('.startmenu').hide();
+    $('.startmenu.mainmenu').hide();
     $('.classpick').hide();
     $('.settingsmenu').hide();
   };
@@ -160,8 +166,8 @@ define(['jquery','assets','player'], function($, Assets, Player) {
   };
 
   // They're done, go.
-  Title.prototype.onFinalized = function() {
-
+  Title.prototype.onFinalized = function(finalizecb) {
+    finalizecb(this.choice);
   };
 
 

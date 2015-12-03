@@ -3,6 +3,9 @@ body {
   margin: 0;
   padding: 0;
 }
+a {
+  text-decoration: none;
+}
 
 .startmenu {
   user-select: none;
@@ -41,7 +44,7 @@ body {
   font-size: 2.5em;
 }
 
-.startbtn:hover, .settingsbtn:hover, .lowqual:hover, .highqual:hover {
+.startbtn:hover, .settingsbtn:hover, .lowqual:hover, .highqual:hover, .backbtn:hover {
   color: black;
 }
 
@@ -63,4 +66,19 @@ body {
 }
 .wobble {
   animation: wobble 1.9s ease-in-out infinite alternate;
+}
+
+
+
+
+.settingChoice {
+  font-size: 4em;
+}
+.qualselect {
+  font-size: 2em;
+}
+
+.backbtn {
+  font-size: 3em;
+  position: absolute;
 }
