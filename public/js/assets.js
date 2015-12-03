@@ -19,6 +19,8 @@ define(['three'], function(THREE) {
 
   Assets.warriorRightMap = THREE.ImageUtils.loadTexture( "assets/player/warriorRight.png" );
   Assets.warriorLeftMap = THREE.ImageUtils.loadTexture( "assets/player/warriorLeft.png" );
+  Assets.wizardRightMap = THREE.ImageUtils.loadTexture( "assets/player/wizardRight.png" );
+  Assets.wizardLeftMap = THREE.ImageUtils.loadTexture( "assets/player/wizardLeft.png" );
 
 
   Assets.plyAttack= new Audio('assets/player/sounds/swordSwing.wav');

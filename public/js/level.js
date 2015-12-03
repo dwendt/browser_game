@@ -175,8 +175,8 @@ define(['three', 'assets'], function(THREE, Assets) {
     //     }
     //   }
     // }
+    
     console.log('finished generating level');
-    this.addWallsToScene(scene);
   }
 
   Level.prototype.carve = function(cx, cy, visited, scene) {

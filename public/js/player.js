@@ -13,12 +13,17 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
   var warriorLeftMap = Assets.warriorLeftMap;
   warriorRightMap.magFilter = THREE.NearestFilter;
   warriorLeftMap.magFilter = THREE.NearestFilter;
-  var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorLeftMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
-
+  var wizardRightMap = Assets.wizardRightMap;
+  // var wizardLeftMap = Assets.wizardLeftMap;
+  warriorRightMap.magFilter = THREE.NearestFilter;
+  warriorLeftMap.magFilter = THREE.NearestFilter;
+  var wizardRightSpriteMat = new THREE.SpriteMaterial( { map: wizardRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  // var wizardLeftSpriteMat = new THREE.SpriteMaterial( { map: wizardLeftMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
 
   // Constructor. Inherits Actor.
-  function Player(x, y) {
+  function Player(x, y, c) {
     Actor.call(this); // Call the parent constructor
     this.name="player";
     numPlayers++;
@@ -29,7 +34,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.position.x = x;
     this.position.y = y;
     //console.log('Player INITX AND Y',this.initX,this.initY);
-
+    this.class = c;
     this.attackSound = Assets.plyAttack;
     this.hitSound = Assets.plyHit;
     this.hurtSound = Assets.plyHurt;
@@ -41,7 +46,6 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
   Player.prototype.destroyPlayer = function() {
     console.log('removing player');
     this.scene.remove(this.sprite);
-    this.scene.remove(this.sphere);
   }
 
   Player.prototype.move = function() {
@@ -53,15 +57,27 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     }
     if(keyboard.pressed('left') && this.canMove.leftDir) {
       // if(this.direction.x == 1) {
-        this.sprite.material.map = warriorLeftMap;
+        // if(this.class == 1){
+        //   this.sprite.material.map = warriorLeftMap;
+        // }
+        // else {
+        //   this.sprite.material.map = wizardLeftMap;
+        // }
+        if(this.direction.x > 0) this.sprite.scale.x *= -1;
       // }
       this.direction.x = -1;
       this.position.x -= (5 * (60/this.fps));
     }
     if(keyboard.pressed('right') && this.canMove.rightDir) {
       // if(this.direction.x == -1) {
-        this.sprite.material.map = warriorRightMap;
+       // if(this.class == 1){
+       //    this.sprite.material.map = warriorRightMap;
+       //  }
+       //  else {
+       //    this.sprite.material.map = wizardRightMap;
+       //  }
       // }
+        if(this.direction.x < 0) this.sprite.scale.x *= -1;
       this.direction.x = 1;
       this.position.x += (5 * (60/this.fps));
       
@@ -84,9 +100,16 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
   // For when it's first being added to a scene.
   Player.prototype.rendInit = function(scene) {
     // http://threejs.org/docs/#Reference/Objects/Sprite
-    var sprite = new THREE.Sprite( warriorSpriteMat );
-
-
+    var sprite;
+    if(this.class == 1) {
+      sprite = new THREE.Sprite( warriorSpriteMat );
+    }
+    else {
+      sprite = new THREE.Sprite( wizardRightSpriteMat );
+      this.clock = new THREE.Clock();
+      this.animator = new TextureAnimator(wizardRightMap, 4, 1, 4, 75);
+      this.animRate = 1000;
+    }
 
     sprite.position.set(this.initX,this.initY,this.parallax);
     sprite.scale.set(this.scale,this.scale,1);
@@ -96,13 +119,10 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.scene = scene;
     this.sprite.obj = this;
 
-    this.scale.x *= -1;
+    // this.scale.x *= -1;
 
 
-    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-    this.sphere = new THREE.Mesh( geometry, material );
-    scene.add( this.sphere );
 
     scene.add(sprite);
     // this.showRaycastLines();
@@ -114,7 +134,6 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
   Player.prototype.rendUpdate = function(scene) {
     // Call the parent's.
     Actor.prototype.rendUpdate.call(this, scene);
-    this.sphere.position.set(this.position.x, this.position.y, this.parallax);
 
     // If we have any player-on-render stuff to do it'd go below.
     // this.move(); // keyboard state based movement

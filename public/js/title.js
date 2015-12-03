@@ -21,7 +21,7 @@ define(['jquery','assets','player'], function($, Assets, Player) {
     this.newBack.name = "titleback";
 
     // Create a little player to hang out
-    this.ply = new Player(0,0); 
+    this.ply = new Player(0,0,1); 
 
     // Create the buttons/text/font
     this.mainBody= $(""+
@@ -41,7 +41,7 @@ define(['jquery','assets','player'], function($, Assets, Player) {
           "<div class='classdesc'>The warrior uses melee to chop stuff up! He can take a lot of damage and moves fast.</div>"+
         "</div>"+
         "<div data-clsid='2' class='classbadge'>"+
-          "<img class='classimg' src='assets/player/wizard.png' />"+
+          "<img class='classimg' src='assets/player/wizardFront.png' />"+
           "<div class='classdesc'>Wizards use <i>magic</i>. <b><u>MAGIC!</u></b> That means we don't need to explain how he works. Experienced players only.</div>"+
         "</div>"+
       "</div>"+
@@ -204,6 +204,7 @@ define(['jquery','assets','player'], function($, Assets, Player) {
   // They're done, go.
   Title.prototype.onFinalized = function(finalizecb) {
     finalizecb(this.choice);
+    this.player.destroyPlayer();
   };
 
 

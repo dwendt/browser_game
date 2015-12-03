@@ -184,7 +184,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     initPlayer: function() {
       var randPos = this.level.getOpenSpot();
 
-      this.player = new Player(randPos[0], randPos[1]);
+      this.player = new Player(randPos[0], randPos[1], this.title.choice);
       this.renderer.setCameraLookAt(this.player.position);
       this.player.health = this.pausedHealth;
     },

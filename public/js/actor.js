@@ -109,7 +109,8 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
   Actor.prototype.collision = function(scene) {
 
     // if(this.name=='skeleton') return;
-
+    var oldScale = this.sprite.scale.x;
+    if(this.scale.x < 0) this.sprite.scale.x *= -1;
     // this.canMove = {'up':true, 'right': true, 'down': true, 'left': true};
     var collisions, i, distance, obstacles;
     // Maximum distance from the origin before we consider collision
@@ -166,9 +167,12 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
       this.canMove = this.newCanMoveVals;
       //console.log(this.canMove);
     }
+    this.sprite.scale.x = oldScale;
   }
 
   Actor.prototype.attack = function(scene) {
+    var oldScale = this.sprite.scale.x;
+    if(this.scale.x < 0) this.sprite.scale.x *= -1;
     this.attackSound.play();
     // console.log(this.name,'attacking');
     this.attackCooldown += this.attackDelay;
@@ -243,6 +247,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
 
     if(objHit) this.hitSound.play();
     this.drawArc(scene);
+    this.sprite.scale.x = oldScale;
   }
 
   // For when this is removed from a scene.
