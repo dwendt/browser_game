@@ -7,12 +7,17 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
   // Private static.
   var numSkeletons = 0;
 
-  var skeletonRightMap = THREE.ImageUtils.loadTexture( "js/assets/skeleton/right.png" );
+  var skeletonRightMap = THREE.ImageUtils.loadTexture( "assets/skeleton/right.png" );
   skeletonRightMap.magFilter = THREE.NearestFilter;
-  var skeletonLeftMap = THREE.ImageUtils.loadTexture( "js/assets/skeleton/left.png" );
+  var skeletonLeftMap = THREE.ImageUtils.loadTexture( "assets/skeleton/left.png" );
   skeletonLeftMap.magFilter = THREE.NearestFilter;
 
   var skeletonSpriteMat = new THREE.SpriteMaterial( { map: skeletonRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+
+  var attackSound = new Audio('assets/skeleton/sounds/attackSound.wav');
+  var hitSound = new Audio('assets/skeleton/sounds/hitSound.wav');
+  // this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
+  var deathSound = new Audio('assets/skeleton/sounds/deathSound.wav');
 
   // Constructor.
   function Skeleton(x, y) {
@@ -90,10 +95,6 @@ define(['three', 'keyboard', 'textureAnimator', 'enemy'], function(THREE, THREEx
     // console.log(this.animator2);
 
     
-    this.attackSound = new Audio('js/assets/skeleton/sounds/attackSound.wav');
-    this.hitSound = new Audio('js/assets/skeleton/sounds/hitSound.wav');
-    // this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
-    this.deathSound = new Audio('js/assets/skeleton/sounds/deathSound.wav');
     
     scene.add(sprite);
     // this.showRaycastLines();

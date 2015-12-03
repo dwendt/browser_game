@@ -60,6 +60,9 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
   // Instanced functions
   GameLogic.prototype = {
+    goTitleScreen: function() {
+
+    },
     // Creates a new level, positions the player.
     initLevel: function() {
       var tempLogic = this;

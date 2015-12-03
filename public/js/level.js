@@ -6,14 +6,14 @@ define(['three'], function(THREE) {
 
   // Private static.
   // Grass texture for the default backing. TODO: loading screen instead?
-  var grassMap = THREE.ImageUtils.loadTexture( "js/assets/level/grass.png" );
+  var grassMap = THREE.ImageUtils.loadTexture( "assets/level/grass.png" );
   grassMap.wrapS = grassMap.wrapT = THREE.RepeatWrapping;
   grassMap.repeat.set( 40, 40 ); // Larger values mean tinier texture.
 
   // Properties for the backing.
   var backGeo = new THREE.PlaneGeometry(30000, 30000, 0); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
-  var wallMap = THREE.ImageUtils.loadTexture( "js/assets/level/wall.jpg" );
+  var wallMap = THREE.ImageUtils.loadTexture( "assets/level/wall.jpg" );
 
   // Constructor.
   function Level(curLevel, onLoadCB) {
@@ -84,9 +84,9 @@ define(['three'], function(THREE) {
     
     var innerBackGeo = new THREE.PlaneGeometry( 2 * this.numCells * this.wallSize, 2 * this.numCells * this.wallSize, 1);
     
-    var innerBackMap = THREE.ImageUtils.loadTexture( "js/assets/level/darkWood.jpg" );
+    var innerBackMap = THREE.ImageUtils.loadTexture( "assets/level/darkWood.jpg" );
     if(this.curLevel <= 3) {
-      innerBackMap = THREE.ImageUtils.loadTexture( "js/assets/level/woodFloor.jpg");
+      innerBackMap = THREE.ImageUtils.loadTexture( "assets/level/woodFloor.jpg");
     }
 
     innerBackMap.wrapS = innerBackMap.wrapT = THREE.RepeatWrapping;
@@ -125,7 +125,7 @@ define(['three'], function(THREE) {
     var visited = [];
 
     if(this.curLevel > 2) {
-      wallMap = THREE.ImageUtils.loadTexture( "js/assets/level/darkBricks.png" );
+      wallMap = THREE.ImageUtils.loadTexture( "assets/level/darkBricks.png" );
     }
 
     for(var i = 0; i < this.numCells; i++) {

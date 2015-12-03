@@ -167,7 +167,7 @@ define(['jquery', 'socket.io-client'], function($, io) {
     var date = new Date();
     var time = formatAMPM(date);
 
-    var $newmsg = $("<div class='msg'></span></div>")
+    var $newmsg = $("<div class='msg'></div>")
     $newmsg.text(user + ": " + message);
 
     var $entries = $msgbox.find(".msgs");
@@ -178,8 +178,20 @@ define(['jquery', 'socket.io-client'], function($, io) {
   };
 
   Chat.prototype.addNewUserMessage = function(data){
+    data.username = data.username || 0; // something or nothing bruh
+
+    if ( data.username || 0 ) {
+      var $newmsg = $("<div class='msg newusermsg'></div>");
+      var msg = $("<span><b><i></i></b> joined the game!</span>");
+      msg.find("i").text(data.username);
+
+      $newmsg.append(msg);
+
+      $(".msgs").append($newmsg);
+    } else {
     $('#participants').empty();
     $('#participants').text(data.numUsers + " players");
+    }
   }
 
   function getDateTime() {

@@ -9,17 +9,17 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
 
   // We should probably define typical player THREEJS geometry/colors/etc as private statics here, and jjust copy the right ones in rendinit based on the kind of player.
 
-  var warriorRightMap = THREE.ImageUtils.loadTexture( "js/assets/player/warriorRight.png" );
-  var warriorLeftMap = THREE.ImageUtils.loadTexture( "js/assets/player/warriorLeft.png" );
+  var warriorRightMap = THREE.ImageUtils.loadTexture( "assets/player/warriorRight.png" );
+  var warriorLeftMap = THREE.ImageUtils.loadTexture( "assets/player/warriorLeft.png" );
   warriorRightMap.magFilter = THREE.NearestFilter;
   warriorLeftMap.magFilter = THREE.NearestFilter;
   var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
 
-  var attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
-  var hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
-  var hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
-  var deathSound = new Audio('js/assets/player/sounds/death.wav');
+  var attackSound = new Audio('assets/player/sounds/swordSwing.wav');
+  var hitSound = new Audio('assets/player/sounds/swordStrike.wav');
+  var hurtSound = new Audio('assets/player/sounds/hurt.wav');
+  var deathSound = new Audio('assets/player/sounds/death.wav');
 
   // Constructor. Inherits Actor.
   function Player(x, y) {
