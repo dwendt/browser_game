@@ -16,6 +16,11 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
   var warriorSpriteMat = new THREE.SpriteMaterial( { map: warriorRightMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
   var keyboard = new THREEx.KeyboardState();
 
+  var attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
+  var hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
+  var hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
+  var deathSound = new Audio('js/assets/player/sounds/death.wav');
+
   // Constructor. Inherits Actor.
   function Player(x, y) {
     Actor.call(this); // Call the parent constructor
@@ -92,10 +97,6 @@ define(['three', 'keyboard', 'textureAnimator', 'actor'], function(THREE, THREEx
 
     this.scale.x *= -1;
 
-    this.attackSound = new Audio('js/assets/player/sounds/swordSwing.wav');
-    this.hitSound = new Audio('js/assets/player/sounds/swordStrike.wav');
-    this.hurtSound = new Audio('js/assets/player/sounds/hurt.wav');
-    this.deathSound = new Audio('js/assets/player/sounds/death.wav');
 
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );

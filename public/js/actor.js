@@ -302,5 +302,10 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
     }, 200, line);
   }
 
+
+  // actor-specific damage code, overrideme.
+  Actor.prototype.takeDamage = function(amount) {
+  }
+
   return Actor;
 });
