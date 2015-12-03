@@ -2,6 +2,7 @@ var log     = require('winston');
 var express = require('express');
 var redis   = require('redis');
 var _       = require('underscore');
+var lodash  = require('lodash');
 var client  = redis.createClient();
 var app     = express();
 //server
@@ -43,7 +44,8 @@ app.get('/score', function(req, res) {
     for(var i = 0; i < reply.length; i++) {
       retObj.push(JSON.parse(reply[i]));
     }
-    res.status(200).json(reply).end();
+    retObj = lodash.chain(retObj).sortBy('userscore').reverse();
+    res.status(200).json(retObj).end();
   });
 });
 

@@ -19,10 +19,10 @@
   "dependencies": {
     "body-parser": "*",
     "express": "*",
-    "lodash": "*",
+    "lodash": "^3.10.1",
     "redis": "*",
     "socket.io": "*",
-    "winston": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "winston": "*"
   }
 }
