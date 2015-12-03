@@ -10,10 +10,17 @@ define(['three', 'assets'], function(THREE, Assets) {
   grassMap.wrapS = grassMap.wrapT = THREE.RepeatWrapping;
   grassMap.repeat.set( 40, 40 ); // Larger values mean tinier texture.
 
+  var wallSize = 250;
+
   // Properties for the backing.
   var backGeo = new THREE.PlaneGeometry(30000, 30000, 0); // TODO: planegeometry or sprite better?
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
   var wallMap = Assets.wallMap;
+
+  var wallGeo = new THREE.BoxGeometry(wallSize, wallSize, 3*wallSize);
+  var wallMat =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
+  var wallSpriteMat = new THREE.SpriteMaterial( { map: wallMap, color: 0xffffff, fog: false, sizeAttenuation: false, size: 32} );
+  var wallSprite = new THREE.Sprite(wallSpriteMat);
 
   // Constructor.
   function Level(curLevel, onLoadCB) {
@@ -23,7 +30,7 @@ define(['three', 'assets'], function(THREE, Assets) {
     this.cells = [];
     this.walls = [];
     this.walls2 = new Array();
-    this.wallSize = 250;
+    this.wallSize = wallSize;
     this.numCells = Math.floor(Math.random()*10 + 5);
     this.zoomLevels = [2000, 4000, 8000, 16000, 32000];
     
@@ -239,11 +246,16 @@ define(['three', 'assets'], function(THREE, Assets) {
 }
 
   Level.prototype.newWall = function(x, y, z) {
+    /*
+    var wallCpy =  new THREE.Sprite(wallSpriteMat);
+    wallCpy.name = 'wall';
+    wallCpy.scale = 40;
+    wallCpy.position.set(x,y,1000);
+    this.walls2.push(wallCpy);
     return;
+    */
     var wallSize = this.wallSize;
-    var boxGeometry = new THREE.BoxGeometry(wallSize, wallSize, 3*wallSize);
-    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
-    var wall = new THREE.Mesh(boxGeometry, boxMaterial);
+    var wall = new THREE.Mesh(wallGeo, wallMat);
 
     wall.position.set(x,y,z);
     wall.name = 'wall';
@@ -324,18 +336,25 @@ define(['three', 'assets'], function(THREE, Assets) {
       }
     }
 
+    console.log("wall count:", this.walls2.length);
     for(var i = 0; i < this.walls2.length; i++) {
       this.walls2[i].updateMatrix();
-      scene.add(this.walls2[i]);
-      // THREE.GeometryUtils.merge(mergedGeo, this.walls2[i].geometry);
-      // mergedGeo.merge(this.walls2[i].geometry, this.walls2[i].matrix);
+      //scene.add(this.walls2[i]);
+
+      //THREE.GeometryUtils.merge(mergedGeo, this.walls2[i].geometry);
+      mergedGeo.merge(this.walls2[i].geometry, this.walls2[i].matrix);
     }
 
-    // var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
-    // mergedGeo.mergeVertices();
-    // var mesh = new THREE.Mesh(mergedGeo, boxMaterial);
-    // mesh.name = 'wall';
-    // scene.add(mesh);
+
+    var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff});
+
+
+    mergedGeo.mergeVertices();
+    var buffGeo = new THREE.BufferGeometry().fromGeometry( mergedGeo );
+    var mesh = new THREE.Mesh(buffGeo, boxMaterial);
+
+    mesh.name = 'wall';
+    scene.add(mesh);
     this.finishedLoading = true;
     this.onLoadCallback();
   }
