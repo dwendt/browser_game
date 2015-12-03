@@ -3,26 +3,155 @@
  */
 
 
-define([], function() {
+define(['jquery','assets','player'], function($, Assets, Player) {
+
+  var grassMap = Assets.grassMap;
+  var backGeo = new THREE.PlaneGeometry(30000, 30000, 0);
+  var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
+  grassMap.repeat.set( 140, 140 ); // Larger values mean tinier texture.
 
   function Title() {
+    var self = this; // preserve this for callbacks
+
+    // title camera pos
+    this.campos = {x:0,y:0};
+
     // Create a backing plane
+    this.newBack = new THREE.Mesh( backGeo, backMat );
+    this.newBack.name = "titleback";
+
+    // Create a little player to hang out
+    this.ply = new Player(0,0); 
 
     // Create the buttons/text/font
+    this.mainBody= $(""+
+    "<div class='startmenu'>"+
+      "<div class='menuhead wobble'>Go End Moe</div>"+
+      "<br /><div class='subhead'>a 2d top down browser game<br />by dwn, chris pirillo, jordan ponce, gabriel babilonia</div>"+
+      "<div class='startbtn'>START</div>"+
+      "<div class='settingsbtn'>settings</div>"+
+    "</div>"+
+    "");
+
+    this.classPickBody = $(""+
+    "<div class='classpick' style='display:none;'>"+
+    "AAAAAAAAAAAAA"+
+    "</div>");
+
+    this.settingsBody = $(""+
+    "<div class='settingsmenu' style='display:none;'>"+
+      "<div class='qualpicker'>"+
+        "<div class='settingChoice'>Quality</div><br />"+
+        "<div class='qualselect'><span class='lowqual'>Low</span> <span class='highqual qualselected'>High</span></div>"+
+      "</div>"+
+    "</div>");
+
+    $(document.body).append(this.mainBody);
+    $(document.body).append(this.classPickBody);
+    $(document.body).append(this.settingsBody);
+
+    $(window).on("click", ".settingsbtn", function() {
+      self.onSettings();
+    });
+
+    $(window).on("click", ".startbtn", function() {
+      self.onStart();
+    });
+
+    $(window).on("click", ".finalizebtn", function() {
+      self.onFinalized();
+    });
+
+    // some effects
+    this.vib = false;
+  };
+
+  Title.prototype.rendUpdate = function(scene, renderer, delta) {
+    if(!!this.removeObjects) {
+      this.rendKill(scene);
+      return;
+    }
+    if(!this.rendInitted) {
+      this.rendInit(scene);
+      this.rendInitted = true;
+    }
+
+    this.ply.position.x = this.campos.x + 190;
+    this.ply.position.y = this.campos.y - 50;
+
+
+    // Vibrate the player a little. I think it's a funny effect.
+    var vibChance = Math.random();
+
+    if (vibChance < 0.01) {
+      this.vib = true; 
+    }
+
+    if (this.vib) {
+      this.ply.position.y += (Math.random()-0.5)*50
+      this.ply.position.x += (Math.random()-0.5)*50
+      
+      if (vibChance < 0.009) {
+        this.vib = false;
+      }
+    }
+
+    this.campos.x -= 5;
+    this.ply.rendUpdate(scene);
+
+    renderer.setCameraPos(this.campos.x, 0, 4000);
+
+    if (this.campos.x < -10000) {
+      this.campos.x = 0;
+    }
+
+  };
+
+  Title.prototype.rendInit = function(scene) {
+    scene.add(this.newBack);
+  };
+
+  Title.prototype.rendKill = function(scene) {
+    var obj = scene.getObjectByName("titleback");
+    scene.remove(obj);
+  };
+
+
+  Title.prototype.showPause = function() {
+
+  };
+
+  // Hide everything.
+  Title.prototype.hideMenu = function() {
+    // Scene stuff
+    this.removeObjects = true;
+
+    // Hide menus.
+    $('.startmenu').hide();
+    $('.classpick').hide();
+    $('.settingsmenu').hide();
   };
 
   // Roll it all back to home.
   Title.prototype.home = function(level) {
-
+    $('.settingsmenu').hide();
+    $('.classpick').hide();
+    $('.startmenu').show();
   };
 
+  // yoyoyo
   Title.prototype.onSettings = function() {
+    $('.classpick').hide();
+    $('.startmenu').hide();
+    $('.settingsmenu').show();
 
   };
 
   // Go to class select
   Title.prototype.onStart = function() {
-
+    $('.startmenu').hide();
+    $('.classpick').hide();
+    $('.settingsmenu').hide();
   };
 
   // Show the character classes as buttons, description box under.

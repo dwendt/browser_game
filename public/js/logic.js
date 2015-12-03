@@ -2,7 +2,7 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat) {
+define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat", "title"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat, Title) {
 
   $('#submissionForm').on('submit', function(e) {
     e.preventDefault();
@@ -26,13 +26,14 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
   // Constructor for this.
   function GameLogic(renderer) {
+    var self = this;
+
     // JQuery is present in this function for UI updates
     this.renderer = renderer;       // Given to us by the main controller.
     console.log("setting callback...");
     renderer.setCallback(this);
 
     // Player creation moved to InitLevel
-    this.chat = new Chat();
 
     // Variables used for game state
     this.inMenu = true;
@@ -41,19 +42,35 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     this.score = 0;
     this.pausedHealth = 100;
 
-    // TODO: since we have no menu, just init a new level.
     this.level = null;
     this.levelHist = new Array();   // Past levels, for going back?
-    this.initLevel();
     
     // Set up zooms
     this.currentZoom = 8000;
     this.zl = 12;
-
     
     this.clock = new THREE.Clock(true);
 
     this.keyboard = new THREEx.KeyboardState();
+
+
+    // 0 = menu
+    // 1 = class select
+    // 2 = playing
+    //????? 3 = score submit?
+    this.state = 0;
+
+    // in pause menu
+    this.paused = false;
+
+    // Spawn a titlescreen with a func to call on start
+    this.title = new Title(function(choice) {
+      self.chat = new Chat();                    
+
+      this.hideMenu();
+
+      self.initLevel();
+    });
 
     return this;
   };
@@ -92,6 +109,15 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
 
     // Called when a new frame is rendered, should make renderables update geometry/color/etc.
     rendUpdate: function(scene) {
+
+      // -----------------------
+      // title/pause screen
+      if (this.state === 0 || this.paused) {
+        this.title.rendUpdate(scene, this.renderer);
+      }
+      // ------------------------
+
+
       var fps = Math.round(1 / this.clock.getDelta());
 
       if(this.keyboard.pressed('z')) {

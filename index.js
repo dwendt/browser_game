@@ -1,12 +1,13 @@
-var log = require('winston');
+var log     = require('winston');
 var express = require('express');
-var redis = require('redis');
-var client = redis.createClient();
-var app = express();
+var redis   = require('redis');
+var _       = require('underscore');
+var client  = redis.createClient();
+var app     = express();
 //server
-var http = require('http').Server(app);
+var http    = require('http').Server(app);
 //io
-var io = require('socket.io')(http);
+var io      = require('socket.io')(http);
 
 var bodyParser = require('body-parser');
 
@@ -88,10 +89,16 @@ io.on('connection', function (socket) {
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username) {
     log.info("recv'd user add",username);
+    
+    // everyone must be unique!
+    if (username in usernames) {
+      username = username + "+"
+    }
+
     // we store the username in the socket session for this client
     socket.username = username;
-    // add the client's username to the global list
-    usernames[username] = username;
+
+    usernames.push(username);
     ++numUsers;
     addedUser = true;
     socket.emit('login', {
@@ -124,7 +131,8 @@ io.on('connection', function (socket) {
     log.info("recv'd disconn", socket.username);
     // remove the username from global usernames list
     if (addedUser) {
-      delete usernames[socket.username];
+      //delete usernames[socket.username];
+      usernames = _.without(usernames, socket.username);
       --numUsers;
 
       // echo globally that this client has left

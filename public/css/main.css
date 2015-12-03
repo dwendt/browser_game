@@ -3,3 +3,64 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.startmenu {
+  user-select: none;
+  cursor: default;
+  color: white;
+  font-family: 'Permanent Marker', sans-serif;
+  top: 15%;
+  display:block;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width:100%;
+  user-select: none;
+
+  position:absolute;
+  float: left;
+}
+.menuhead {
+  color: black;
+  font-size: 8.5em;
+  margin-bottom: -0.4em;
+
+}
+
+.subhead {
+  font-size: 1.5em;
+  margin-bottom: 2%;
+}
+
+.startbtn {
+  font-size: 3.5em;
+}
+
+.settingsbtn {
+  font-size: 2.5em;
+}
+
+.startbtn:hover, .settingsbtn:hover, .lowqual:hover, .highqual:hover {
+  color: black;
+}
+
+.qualselected {
+  color: red;
+}
+
+@keyframes wobble {
+  from {
+    transform: scale(1,1) translateX(20px) rotate(20deg);
+    -webkit-text-stroke-width: 9px;
+    -webkit-text-stroke-color: #ff00B0;
+  }
+  to { 
+    transform: scale(0.8,0.8) translateX(-20px) rotate(-20deg);
+    -webkit-text-stroke-width: 9px;
+    -webkit-text-stroke-color: #ff0000;
+  }
+}
+.wobble {
+  animation: wobble 1.9s ease-in-out infinite alternate;
+}
