@@ -27,6 +27,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
     this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(1, -1, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, -1, 0),new THREE.Vector3(-1, 0, 0),new THREE.Vector3(-1, 1, 0)];
     // this.rays = [new THREE.Vector3(0, 1, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(0, -1, 0),new THREE.Vector3(-1, 0, 0)];
     this.caster = new THREE.Raycaster(this.position, this.rays[0], 0, this.radius*2);
+    this.attackCaster = new THREE.Raycaster(this.position, this.rays[0], 0, this.attackRadius*2);
     this.direction = {};
     this.canMove = {'up':true, 'rightDir': true, 'down': true, 'leftDir': true};
     this.attackCooldown = 0;
@@ -190,7 +191,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
       // We reset the raycaster to this direction
       this.caster.set(this.position, this.rays[i]);
       // Test if we intersect with any obstacle mesh
-      collisions = this.caster.intersectObjects(obstacles);
+      collisions = this.attackCaster.intersectObjects(obstacles);
       // And disable that direction if we do
 
       for (var j = 0; j < collisions.length; j++) {
@@ -216,7 +217,7 @@ define(['three', 'keyboard', 'textureAnimator', 'assets'], function(THREE, THREE
             collObj.position.x -= 20;
             if(collObj.hurtSound) {
               collObj.hurtSound.play();
-            }            
+            } 
             objHit=true;
             break;
           }
