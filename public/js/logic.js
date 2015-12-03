@@ -2,7 +2,7 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap"], function(THREE, Level, Player, Skeleton, THREEx, $) {
+define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat) {
 
   $('#submissionForm').on('submit', function(e) {
     e.preventDefault();
@@ -32,6 +32,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     renderer.setCallback(this);
 
     // Player creation moved to InitLevel
+    this.chat = new Chat();
 
     // Variables used for game state
     this.inMenu = true;
@@ -45,9 +46,11 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     this.levelHist = new Array();   // Past levels, for going back?
     this.initLevel();
     
+    // Set up zooms
     this.currentZoom = 8000;
     this.zl = 12;
 
+    
     this.clock = new THREE.Clock(true);
 
     this.keyboard = new THREEx.KeyboardState();
@@ -59,16 +62,13 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
   GameLogic.prototype = {
     // Creates a new level, positions the player.
     initLevel: function() {
-      this.level = new Level(this.curLevel);
+      var tempLogic = this;
+      this.level = new Level(this.curLevel, function() {
+        // Callback for level load finish.
+        tempLogic.initPlayer();
+        tempLogic.createMonsters();
+      });
 
-      // Custom async controller because reasons
-      var monsterInterval = setInterval(function(level, f, th){
-        if(th.level.finishedLoading) {
-          th.initPlayer();
-          th.createMonsters();
-          clearInterval(monsterInterval);
-        }
-      }, 50, this.level, this.createMonsters, this);
     },
     // Handle things we need to do when we transition off our current level.
     storeLevel: function() {
@@ -153,15 +153,9 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     },
 
     initPlayer: function() {
-      var newX = Math.floor(Math.random()*this.level.numCells);
-      var newY = Math.floor(Math.random()*this.level.numCells);
+      var randPos = this.level.getOpenSpot();
 
-      //Make sure there's no wall where we want to place the Player
-      while(this.level.cells[newX][newY].filled) {
-        newX = Math.floor(Math.random()*this.level.numCells);
-        newY = Math.floor(Math.random()*this.level.numCells);
-      }
-      this.player = new Player((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset);
+      this.player = new Player(randPos[0], randPos[1]);
       this.renderer.setCameraLookAt(this.player.position);
       this.player.health = this.pausedHealth;
     },
@@ -169,15 +163,10 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     initSkeletons: function() {
       var numSkeletons = Math.floor(Math.random() * 10 + 5);
       for(var i = 0; i < numSkeletons; i++) {
-        var newX = Math.floor(Math.random()*this.level.numCells);
-        var newY = Math.floor(Math.random()*this.level.numCells);
+        var randPos = this.level.getOpenSpot();
 
-        //Make sure there's no wall where we want to place the skeleton
-        while(this.level.cells[newX][newY].filled) {
-          newX = Math.floor(Math.random()*this.level.numCells);
-          newY = Math.floor(Math.random()*this.level.numCells);
-        }
-        this.actors.push(new Skeleton((newX*2*this.level.wallSize) - this.level.offset, newY*2*this.level.wallSize - this.level.offset));
+        this.actors.push(new Skeleton(randPos[0], randPos[1]));
+
         this.actors[this.actors.length-1].player = this.player;
         this.actors[this.actors.length-1].health *= this.curLevel;
       }

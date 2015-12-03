@@ -3,69 +3,29 @@
   <head>
     <!--Main CSS Styling-->
     <link rel="stylesheet" type="text/css" href="css/chat.css">
-    <!--Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <title>Chat feature</title>
   </head>
   <body>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="portlet portlet-default">
-                    <div class="portlet-heading">
-                        <div class="portlet-title">
-                            <h4 class="user-name"><i class="fa fa-circle text-green"></i>Not logged in</h4>
-                        </div>
-                        <div class="portlet-widgets">
-
-                            <span class="divider"></span>
-                            <a data-toggle="collapse" data-parent="#accordion" href="#chat"><i class="fa fa-chevron-down"></i></a>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div id="chat" class="panel-collapse collapse in">
-                        <div>
-                        <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 300px;">
-                            <div class="row">
-                              <div class="col-lg-12">
-                                  <p class="text-center text-muted small" id ="participants">Logged in participants online: 0</p>
-                              </div>
-                                <div class="col-lg-12">
-                                    <p class="text-center text-muted small chat-time-stamp">###</p>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="portlet-footer">
-                            <form role="form">
-                                <div class="form-group" class="input-box-label">
-                                    <textarea id="input" class="form-control"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <button type="button" style="display:none;" id="sendBtn" class="btn btn-default pull-right">Send</button>
-                                    <button type="button"  id="loginBtn" class="btn btn-default pull-right">Login</button>
-
-                                    <div class="clearfix"></div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /.col-md-4 -->
-        </div>
-    </div>
 
   </body>
 <!--Socket IO-->
 <script src="/socket.io/socket.io.js"></script>
 <!--jquery js-->
-<script src="js/jquery.js"></script>
+<script src="js/vendor/jquery.js"></script>
 <!--Bootstrap js-->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <!--chat.js-->
 <script type="text/javascript" src="js/chat.js"></script>
 
-</script>
+  <script>
+var x = $(""+
+                "<div class='msgbox'>"+
+                  "<div class='chat-time-stamp'></div>"+
+                  "<div class='msgs'></div>"+
+                  "<div class='inp_wrapper'>"+
+                    "<input type='text' class='msg_inp' placeholder='Message'>"+
+                    "<button type='button' class='msg_send'>Send</button>"+
+                "</div>");
+
+$(document.body).append(x);
+  </script>
 </html>

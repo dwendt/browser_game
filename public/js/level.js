@@ -15,9 +15,8 @@ define(['three'], function(THREE) {
   var backMat = new THREE.MeshLambertMaterial( { map: grassMap, color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5 } );
   var wallMap = THREE.ImageUtils.loadTexture( "js/assets/level/wall.jpg" );
 
-
   // Constructor.
-  function Level(curLevel) {
+  function Level(curLevel, onLoadCB) {
     this.curLevel = curLevel;
     console.log(this.curLevel);
     this.rendInitted = false;
@@ -27,6 +26,12 @@ define(['three'], function(THREE) {
     this.wallSize = 250;
     this.numCells = Math.floor(Math.random()*10 + 5);
     this.zoomLevels = [2000, 4000, 8000, 16000, 32000];
+    
+
+    if (onLoadCB === undefined) {
+      onLoadCB = function(){}; // if no callback do nothing
+    }
+    this.onLoadCallback = onLoadCB;
   };
 
   // Instanced destructor...
@@ -234,6 +239,7 @@ define(['three'], function(THREE) {
 }
 
   Level.prototype.newWall = function(x, y, z) {
+    return;
     var wallSize = this.wallSize;
     var boxGeometry = new THREE.BoxGeometry(wallSize, wallSize, 3*wallSize);
     var boxMaterial =  new THREE.MeshBasicMaterial({map: wallMap, color: 0xffffff, overdraw: .5});
@@ -331,6 +337,30 @@ define(['three'], function(THREE) {
     // mesh.name = 'wall';
     // scene.add(mesh);
     this.finishedLoading = true;
+    this.onLoadCallback();
+  }
+
+  // For placing stuff randomly.
+  Level.prototype.getOpenSpot = function() {
+
+    // Get a random cell entry
+    var newX = Math.floor(Math.random() * this.numCells);
+    var newY = Math.floor(Math.random() * this.numCells);
+    
+    while(this.cells[newX][newY].filled) {
+      newX = Math.floor(Math.random()*this.numCells);
+      newY = Math.floor(Math.random()*this.numCells);
+    }
+
+    // Account for cell sizes.
+    newX = newX*2*this.wallSize;
+    newY = newY*2*this.wallSize;
+
+    // "offset" is pretty much radius of the level.
+    newX = newX - this.offset;
+    newY = newY - this.offset;
+
+    return [newX, newY];
   }
 
   return Level;

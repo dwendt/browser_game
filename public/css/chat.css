@@ -1,176 +1,76 @@
-
-.container{
-  width: 100% !important;
-  margin-top: 20px;
-}
-.portlet {
-    margin-bottom: 15px;
-}
-
-.btn-white {
-    border-color: #cccccc;
-    color: #333333;
-    background-color: #ffffff;
+.msgbox {
+  background: rgba(0,0,0,0.5);
+  border: 1px gray;
+  float: right;
+  position:absolute;
+  bottom: 0;
+  right:0;
+  width: 300px;
+  height: 100px;
 }
 
-.portlet {
-    border: 1px solid;
+@media only screen and (max-width: 300px) {
+  .msgbox {
+    width: 100%;
+  }
 }
 
-.portlet .portlet-heading {
-    padding: 0 15px;
+.user_inp {
+
 }
 
-.portlet .portlet-heading h4 {
-    padding: 1px 0;
-    font-size: 16px;
+.userinfo {
+  height: 15px;
 }
 
-.portlet .portlet-heading a {
-    color: #fff;
+.adduser {
+  background: #FFC1C1;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  float: left;
+  display:inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.portlet .portlet-heading a:hover,
-.portlet .portlet-heading a:active,
-.portlet .portlet-heading a:focus {
-    outline: none;
+.inp_wrapper {
+  height: 20%;
+  width:100%;
+  position: absolute;
+  box-shadow: 0 -1px 0 #000;
 }
 
-.portlet .portlet-widgets .dropdown-menu a {
-    color: #333;
+
+.msgs {
+  height: 79%;
+  overflow: scroll;
+  overflow-x: hidden;
+  color: white;
 }
 
-.portlet .portlet-widgets ul.dropdown-menu {
-    min-width: 0;
+.msg {
+  font-size: 10px;
 }
 
-.portlet .portlet-heading .portlet-title {
-    float: left;
+.msg_inp {
+  background: transparent;
+  height: 100%;
+  width: 80%;
+  border: 0;
+  color: white;
 }
 
-.portlet .portlet-heading .portlet-title h4 {
-    margin: 10px 0;
-}
+.msg_send {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20%;
+  height: 100%;
 
-.portlet .portlet-heading .portlet-widgets {
-    float: right;
-    margin: 8px 0;
-}
-
-.portlet .portlet-heading .portlet-widgets .tabbed-portlets {
-    display: inline;
-}
-
-.portlet .portlet-heading .portlet-widgets .divider {
-    margin: 0 5px;
-}
-
-.portlet .portlet-body {
-    padding: 15px;
-    background: #fff;
-    height: 700px!important;
-}
-
-.portlet .portlet-footer {
-    padding: 10px 15px;
-    background: #e0e7e8;
-}
-
-.portlet .portlet-footer ul {
-    margin: 0;
-}
-
-.portlet-green,
-.portlet-green>.portlet-heading {
-    border-color: #16a085;
-}
-
-.portlet-green>.portlet-heading {
-    color: #fff;
-    background-color: #16a085;
-}
-
-.portlet-orange,
-.portlet-orange>.portlet-heading {
-    border-color: #f39c12;
-}
-
-.portlet-orange>.portlet-heading {
-    color: #fff;
-    background-color: #f39c12;
-}
-
-.portlet-blue,
-.portlet-blue>.portlet-heading {
-    border-color: #2980b9;
-}
-
-.portlet-blue>.portlet-heading {
-    color: #fff;
-    background-color: #2980b9;
-}
-
-.portlet-red,
-.portlet-red>.portlet-heading {
-    border-color: #e74c3c;
-}
-
-.portlet-red>.portlet-heading {
-    color: #fff;
-    background-color: #e74c3c;
-}
-
-.portlet-purple,
-.portlet-purple>.portlet-heading {
-    border-color: #8e44ad;
-}
-
-.portlet-purple>.portlet-heading {
-    color: #fff;
-    background-color: #8e44ad;
-}
-
-.portlet-default,
-.portlet-dark-blue,
-.portlet-default>.portlet-heading,
-.portlet-dark-blue>.portlet-heading {
-    border-color: #34495e;
-}
-
-.portlet-default>.portlet-heading,
-.portlet-dark-blue>.portlet-heading {
-    color: #fff;
-    background-color: #34495e;
-}
-
-.portlet-basic,
-.portlet-basic>.portlet-heading {
-    border-color: #333;
-}
-
-.portlet-basic>.portlet-heading {
-    border-bottom: 1px solid #333;
-    color: #333;
-    background-color: #fff;
-}
-
-@media(max-width:768px) {
-    .portlet {
-        margin-bottom: 30px;
-    }
-    .portlet .portlet-body{
-      height: 200px!important;
-    }
-}
-
-.text-green {
-    color: #16a085;
-}
-
-.text-orange {
-    color: #f39c12;
-}
-
-.text-red {
-    color: #e74c3c;
+  outline:none;
+  border:none;
+  background:white;
 }

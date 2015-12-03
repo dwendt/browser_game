@@ -268,7 +268,6 @@ define(['three', 'keyboard', 'textureAnimator'], function(THREE, THREEx, Texture
   }
 
   Actor.prototype.drawArc = function(scene) {
-    console.log('drawing arc');
     var curve;
     if(this.direction.x > 0) {  // Draw arc to the right
         curve = new THREE.EllipseCurve(
