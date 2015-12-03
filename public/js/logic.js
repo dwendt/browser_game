@@ -67,7 +67,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     this.title = new Title(function(choice) {
       self.chat = new Chat();                    
 
-      this.hideMenu();
+      self.title.hideMenu();
 
       self.initLevel();
     });

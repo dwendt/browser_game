@@ -82,3 +82,31 @@ a {
   font-size: 3em;
   position: absolute;
 }
+
+div.cbhover, div.cbselected {
+  background: rgba(31,0,0,0.8);
+}
+
+.classbadge {
+  font-size: 10px;
+  font-family: sans-serif;
+  background: rgba(0,0,0,0.4);
+  width: 90px;
+  padding-top: 10px;
+  padding-left:5px;
+  padding-right:5px;
+
+  display: inline-block;
+  height: 200px;
+  z-index: 9999999;
+}
+.classlist {
+  display:inline;
+  width: 200px;
+}
+.classimg {
+  width: 70px;
+}
+.finalizebtn {
+  font-size: 3em;
+}

@@ -30,13 +30,23 @@ define(['jquery','assets','player'], function($, Assets, Player) {
       "<br /><div class='subhead'>a 2d top down browser game<br />by dwn, chris pirillo, jordan ponce, gabriel babilonia</div>"+
       "<div class='startbtn'>START</div>"+
       "<div class='settingsbtn'>settings</div>"+
-      "<div class='backbtn'>{{ back }}</div>"+
     "</div>"+
     "");
 
     this.classPickBody = $(""+
-    "<div class='classpick' style='display:none;'>"+
-    "AAAAAAAAAAAAA"+
+    "<div class='classpick startmenu' style='display:none;'>"+
+      "<div class='classlist'>"+
+        "<div data-clsid='1' class='classbadge'>"+
+          "<img class='classimg' src='assets/player/warriorLeft.png' />"+
+          "<div class='classdesc'>The warrior uses melee to chop stuff up! He can take a lot of damage and moves fast.</div>"+
+        "</div>"+
+        "<div data-clsid='2' class='classbadge'>"+
+          "<img class='classimg' src='assets/player/wizard.png' />"+
+          "<div class='classdesc'>Wizards use <i>magic</i>. <b><u>MAGIC!</u></b> That means we don't need to explain how he works. Experienced players only.</div>"+
+        "</div>"+
+      "</div>"+
+      "<div style='display:none;' class='finalizebtn'>-= START GAME =-</div>"+
+      "<div class='backbtn'>{{ back }}</div>"+
     "</div>");
 
     this.settingsBody = $(""+
@@ -51,6 +61,29 @@ define(['jquery','assets','player'], function($, Assets, Player) {
     $(document.body).append(this.mainBody);
     $(document.body).append(this.classPickBody);
     $(document.body).append(this.settingsBody);
+
+
+
+    $( ".classbadge" ).hover(
+      function() {
+        $( this ).addClass( "cbhover" );
+      }, function() {
+        $( this ).removeClass( "cbhover" );
+      }
+    );
+    // class select click
+    $(document).on("click", ".classbadge", function(e) {
+      $(".classbadge").removeClass("cbselected");
+      if(!!$(e.target).data("clsid")) {
+        self.choice = $(e.target).data("clsid");
+        $(e.target).addClass("cbselected");
+      } else {
+        self.choice = $(e.target).parent(".classbadge").data("clsid");
+        $(e.target).parent(".classbadge").addClass("cbselected");
+      }
+      $(".finalizebtn").show();
+      console.log("selected class...", self.choice);
+    });
 
     $(document).on("click", ".settingsbtn", function() {
       self.onSettings();
@@ -154,15 +187,18 @@ define(['jquery','assets','player'], function($, Assets, Player) {
   };
 
   // Go to class select
+  // Show the character classes as buttons, description box under.
   Title.prototype.onStart = function() {
     $('.startmenu.mainmenu').hide();
-    $('.classpick').hide();
+    $('.classpick').show();
     $('.settingsmenu').hide();
   };
 
-  // Show the character classes as buttons, description box under.
+  // Clsas
   Title.prototype.onClass = function() {
-
+    $('.startmenu.mainmenu').hide();
+    $('.classpick').hide();
+    $('.settingsmenu').hide();
   };
 
   // They're done, go.
