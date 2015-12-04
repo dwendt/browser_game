@@ -35,6 +35,7 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.position.y = y;
     this.distance = 8;
     this.startHealth = 100;
+    this.wasHit = false;
     //console.log('Player INITX AND Y',this.initX,this.initY);
     this.class = c;
     this.attackSound = Assets.plyAttack;
@@ -125,6 +126,8 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     this.scene = scene;
     this.sprite.obj = this;
 
+    this.updateHealth = true;
+
     // this.scale.x *= -1;
 
 
@@ -142,6 +145,11 @@ define(['three', 'keyboard', 'textureAnimator', 'actor', 'assets'], function(THR
     // If we have any player-on-render stuff to do it'd go below.
     // this.move(); // keyboard state based movement
   };
+
+  Player.prototype.takeDamage = function(amount) {
+    Actor.prototype.takeDamage.call(this, amount);
+    this.updateHealth = true;
+  }
 
   // For when this is removed from a scene.
   Player.prototype.rendKill = function(scene) {

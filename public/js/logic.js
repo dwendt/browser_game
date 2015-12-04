@@ -2,7 +2,7 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat", "title"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat, Title) {
+define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat", "title", "hud"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat, Title, Hud) {
 
   $('#submissionForm').on('submit', function(e) {
     e.preventDefault();
@@ -87,6 +87,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         // Callback for level load finish.
         tempLogic.initPlayer();
         tempLogic.createMonsters();
+        tempLogic.createHud();
       });
 
     },
@@ -129,7 +130,10 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         this.player.fps = fps;
         this.player.rendUpdate(scene);
         this.renderer.setCameraPos(this.player.position.x, this.player.position.y, this.currentZoom);
-        $('#playerHealth').text(this.player.health + " / " + this.player.startHealth);
+        if(this.player.updateHealth) {
+          this.hud.updateHealth(this.player.health, this.player.startHealth);
+          this.player.updateHealth = false;
+        }
         if(this.player.removal) {
           // Gameover code goes here
           this.player.deathSound.play();
@@ -163,10 +167,8 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           this.actors.splice(i--,1);
           if(this.player.health > 0) {
             this.score += 10;
-          }
-          $('#playerScore').text("Score: " + this.score);
-          $('#hiddenScoreDiv').text(this.score);
-          $('#modalScore').val(this.score);
+            this.hud.updateScore(this.score);
+          }          
           $('#monsterText').text(this.actors.length + " Monsters remain.");
           if(this.actors.length == 0 && this.player.health > 0) { // Only the player is left
             setTimeout(function(th) {
@@ -203,6 +205,12 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         this.actors[this.actors.length-1].player = this.player;
         this.actors[this.actors.length-1].health *= this.curLevel;
       }
+    },
+
+    createHud: function() {
+      this.hud = new Hud();
+      this.hud.updateHealth(this.player.health, this.player.startHealth);
+      this.hud.updateScore(this.score);
     },
 
     gameOver: function() {
