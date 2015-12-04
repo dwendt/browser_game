@@ -39,7 +39,8 @@ define(['jquery','assets'], function($, Assets) {
   };
 
   Hud.prototype.updateHealth = function(health, maxHealth) {
-    $('.health.current').innerWidth((100*health/maxHealth)+'%');
+    var newWidth = Math.min(100, (100*health/maxHealth));
+    $('.health.current').innerWidth(newWidth+'%');
     $('.health.text').text(health+' / '+maxHealth);
   };
 

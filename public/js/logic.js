@@ -40,7 +40,6 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     this.curLevel = 1;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.score = 0;
-    this.pausedHealth = 100;
 
     this.level = null;
     this.levelHist = new Array();   // Past levels, for going back?
@@ -161,18 +160,24 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           }
           
           if(Math.random() > .95) {
-            this.chat.addChatMessage({username:'', message:'Item upgrade found! Damage Increased!'}, {color: '6f57fa'});
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Damage Increased!'}, {color: '00ff00'});
             this.player.damage *= 2;
           }
 
           if(Math.random() > .95) {
-            this.chat.addChatMessage({username:'', message:'Item upgrade found! Movement Speed Increased!'}, {color: '6f57fa'});
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Movement Speed Increased!'}, {color: '00ff00'});
             this.player.distance *= 1.5;
           }
 
           if(Math.random() > .95) {
-            this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Speed Increased!'}, {color: '6f57fa'});
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Speed Increased!'}, {color: '00ff00'});
             this.player.attackDelay /= 1.5;
+          }
+
+          if(Math.random() > .95) {
+            this.chat.addChatMessage({username:'', message:'Item found! Health Increased!'}, {color: '00ff00'});
+            this.player.health += 10;
+            this.player.updateHealth = true;
           }
 
           this.actors[i] = null;
@@ -202,9 +207,9 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     initPlayer: function() {
       var randPos = this.level.getOpenSpot();
 
-      this.player = new Player(randPos[0], randPos[1], this.title.choice);
+      this.player = new Player(randPos[0], randPos[1], this.title.choice, this.pausedHealth);
+      this.pausedHealth = this.player.health;
       this.renderer.setCameraLookAt(this.player.position);
-      this.player.health = this.pausedHealth;
     },
 
     initSkeletons: function() {
