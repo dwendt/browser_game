@@ -2,7 +2,7 @@
  *  Game logic controller to handle game state, objects, and updating the renderer.
  */
 
-define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat", "title"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat, Title) {
+define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap", "chat", "title", "hud"], function(THREE, Level, Player, Skeleton, THREEx, $, bootstrap, Chat, Title, Hud) {
 
   $('#submissionForm').on('submit', function(e) {
     e.preventDefault();
@@ -40,7 +40,6 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     this.curLevel = 1;              // Should determine difficulty, stage contents, loot...
     this.actors = new Array();      // Monsters/AI on stage for logic ticking/rendering.
     this.score = 0;
-    this.pausedHealth = 100;
 
     this.level = null;
     this.levelHist = new Array();   // Past levels, for going back?
@@ -87,6 +86,7 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         // Callback for level load finish.
         tempLogic.initPlayer();
         tempLogic.createMonsters();
+        tempLogic.createHud();
       });
 
     },
@@ -129,7 +129,10 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         this.player.fps = fps;
         this.player.rendUpdate(scene);
         this.renderer.setCameraPos(this.player.position.x, this.player.position.y, this.currentZoom);
-        $('#playerHealth').text(this.player.health + " / " + this.player.startHealth);
+        if(this.player.updateHealth) {
+          this.hud.updateHealth(this.player.health, this.player.startHealth);
+          this.player.updateHealth = false;
+        }
         if(this.player.removal) {
           // Gameover code goes here
           this.player.deathSound.play();
@@ -155,18 +158,34 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           if(this.actors[i].deathSound) {
             this.actors[i].deathSound.play();
           }
+          
           if(Math.random() > .95) {
-            this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Increased!'}, {color: '6f57fa'});
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Damage Increased!'}, {color: '00ff00'});
             this.player.damage *= 2;
           }
+
+          if(Math.random() > .95) {
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Movement Speed Increased!'}, {color: '00ff00'});
+            this.player.distance *= 1.5;
+          }
+
+          if(Math.random() > .95) {
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Speed Increased!'}, {color: '00ff00'});
+            this.player.attackDelay /= 1.5;
+          }
+
+          if(Math.random() > .95) {
+            this.chat.addChatMessage({username:'', message:'Item found! Health Increased!'}, {color: '00ff00'});
+            this.player.health += 10;
+            this.player.updateHealth = true;
+          }
+
           this.actors[i] = null;
           this.actors.splice(i--,1);
           if(this.player.health > 0) {
             this.score += 10;
-          }
-          $('#playerScore').text("Score: " + this.score);
-          $('#hiddenScoreDiv').text(this.score);
-          $('#modalScore').val(this.score);
+            this.hud.updateScore(this.score);
+          }          
           $('#monsterText').text(this.actors.length + " Monsters remain.");
           if(this.actors.length == 0 && this.player.health > 0) { // Only the player is left
             setTimeout(function(th) {
@@ -188,9 +207,9 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
     initPlayer: function() {
       var randPos = this.level.getOpenSpot();
 
-      this.player = new Player(randPos[0], randPos[1], this.title.choice);
+      this.player = new Player(randPos[0], randPos[1], this.title.choice, this.pausedHealth);
+      this.pausedHealth = this.player.health;
       this.renderer.setCameraLookAt(this.player.position);
-      this.player.health = this.pausedHealth;
     },
 
     initSkeletons: function() {
@@ -203,6 +222,12 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
         this.actors[this.actors.length-1].player = this.player;
         this.actors[this.actors.length-1].health *= this.curLevel;
       }
+    },
+
+    createHud: function() {
+      this.hud = new Hud();
+      this.hud.updateHealth(this.player.health, this.player.startHealth);
+      this.hud.updateScore(this.score);
     },
 
     gameOver: function() {
