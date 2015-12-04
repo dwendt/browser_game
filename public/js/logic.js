@@ -159,10 +159,22 @@ define(["three", "level", "player", "skeleton", "keyboard", "jquery", "bootstrap
           if(this.actors[i].deathSound) {
             this.actors[i].deathSound.play();
           }
+          
           if(Math.random() > .95) {
-            this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Increased!'}, {color: '6f57fa'});
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Damage Increased!'}, {color: '6f57fa'});
             this.player.damage *= 2;
           }
+
+          if(Math.random() > .95) {
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Movement Speed Increased!'}, {color: '6f57fa'});
+            this.player.distance *= 1.5;
+          }
+
+          if(Math.random() > .95) {
+            this.chat.addChatMessage({username:'', message:'Item upgrade found! Attack Speed Increased!'}, {color: '6f57fa'});
+            this.player.attackDelay /= 1.5;
+          }
+
           this.actors[i] = null;
           this.actors.splice(i--,1);
           if(this.player.health > 0) {
